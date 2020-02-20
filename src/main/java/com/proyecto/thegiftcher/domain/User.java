@@ -1,6 +1,8 @@
 package com.proyecto.thegiftcher.domain;
 
 import java.util.Date;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,27 +12,33 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "user")
+@Table(name = "usertg")
 public class User {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
 	
+	@Column(name="name")
 	@NotEmpty
 	String name;
 	
+	@Column(name="last_name")
 	String lastName;
 	
+	@Column(name="mail")
 	@NotEmpty
 	String mail;
 	
+	@Column(name="password")
 	@NotEmpty
 	String password;
 	
+	@Column(name="birthday")
 	@NotNull
 	Date birthday;
 	
+	@Column(name="profile_image")
 	Byte profileImage;
 	
 	public User(@NotEmpty String name, String lastName, @NotEmpty String mail, @NotEmpty String password,
