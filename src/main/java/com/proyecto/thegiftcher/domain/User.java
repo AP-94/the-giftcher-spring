@@ -19,6 +19,10 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
 	
+	@Column(name="username")
+	@NotEmpty
+	String username;
+	
 	@Column(name="name")
 	@NotEmpty
 	String name;
@@ -41,15 +45,24 @@ public class User {
 	@Column(name="profile_image")
 	Byte profileImage;
 	
-	public User(@NotEmpty String name, String lastName, @NotEmpty String mail, @NotEmpty String password,
+	public User(@NotEmpty String username, @NotEmpty String name, String lastName, @NotEmpty String mail, @NotEmpty String password,
 			@NotNull Timestamp birthday, Byte profileImage) {
 		super();
+		this.username = username;
 		this.name = name;
 		this.lastName = lastName;
 		this.mail = mail;
 		this.password = password;
 		this.birthday = birthday;
 		this.profileImage = profileImage;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public User() {

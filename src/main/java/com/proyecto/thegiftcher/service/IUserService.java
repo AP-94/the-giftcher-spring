@@ -11,5 +11,7 @@ public interface IUserService {
 	public void post(User user);
 	public void put(User user, long id);
 	public void delete(long id);
+	public void login(String username, String password);
+	public void register(String username, String password);
 
 }

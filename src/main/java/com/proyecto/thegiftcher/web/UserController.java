@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto.thegiftcher.domain.User;
@@ -29,12 +30,19 @@ public class UserController {
 		return userService.get(id);
 	}
 	
-	@PostMapping(path = "/register")
-	public void register(User user) {
+	//Prueba para ver que todo bien para añadir un usuario (se debe eliminar)
+	@PostMapping(path = "/user")
+	public void add(User user) {
 		userService.post(user);
 	}
 	
-	@PostMapping(path = "/login")
+	
+	@PostMapping(path = "/register")
+	public void register(@RequestBody User user) {
+		userService.post(user);
+	}
+	
+	@GetMapping(path = "/login")
 	public void login(User user) {
 		userService.post(user);
 	}
