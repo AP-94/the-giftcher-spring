@@ -1,6 +1,6 @@
 package com.proyecto.thegiftcher.domain;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,13 +36,13 @@ public class User {
 	
 	@Column(name="birthday")
 	@NotNull
-	Date birthday;
+	Timestamp birthday;
 	
 	@Column(name="profile_image")
 	Byte profileImage;
 	
 	public User(@NotEmpty String name, String lastName, @NotEmpty String mail, @NotEmpty String password,
-			@NotNull Date birthday, Byte profileImage) {
+			@NotNull Timestamp birthday, Byte profileImage) {
 		super();
 		this.name = name;
 		this.lastName = lastName;
@@ -105,12 +105,12 @@ public class User {
 	}
 
 
-	public Date getBirthday() {
+	public Timestamp getBirthday() {
 		return birthday;
 	}
 
 
-	public void setBirthday(Date birthday) {
+	public void setBirthday(Timestamp birthday) {
 		this.birthday = birthday;
 	}
 
