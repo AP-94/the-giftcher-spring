@@ -1,15 +1,23 @@
 package com.proyecto.thegiftcher.domain;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
 @Table(name = "usertg")
@@ -40,6 +48,13 @@ public class User {
 	
 	@Column(name="profile_image")
 	Byte profileImage;
+	
+	@ManyToMany
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "user_wish",
+               joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "wish_id", referencedColumnName = "id"))
+    private Set<Wish> wishes = new HashSet<>();
 	
 	public User(@NotEmpty String name, String lastName, @NotEmpty String mail, @NotEmpty String password,
 			@NotNull Timestamp birthday, Byte profileImage) {
@@ -123,4 +138,56 @@ public class User {
 	public void setProfileImage(Byte profileImage) {
 		this.profileImage = profileImage;
 	}
+	
+	public Set<Wish> getWishes() {
+        return wishes;
+    }
+
+    public User wishes(Set<Wish> wishes) {
+        this.wishes = wishes;
+        return this;
+    }
+
+    public User addWish(Wish wish) {
+        this.wishes.add(wish);
+        wish.getUsers().add(this);
+        return this;
+    }
+
+    public User removeWish(Wish wish) {
+        this.wishes.remove(wish);
+        wish.getUsers().remove(this);
+        return this;
+    }
+
+    public void setWishes(Set<Wish> wishes) {
+        this.wishes = wishes;
+    }
+	
+	@Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof User)) {
+            return false;
+        }
+        return id != null && id.equals(((User) o).id);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+            "id=" + getId() +
+            ", name='" + getName() + "'" +
+            ", last_name='" + getLastName() + "'" +
+            ", birthday='" + getBirthday() + "'" +
+            ", profile_image='" + getProfileImage() + "'" +
+            "}";
+    }
 }
