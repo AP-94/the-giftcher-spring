@@ -16,13 +16,11 @@ public class UserServiceImpl implements IUserService{
 
 	@Override
 	public User get(long id) {
-		// TODO Auto-generated method stub
 		return userRepository.findById(id).get();
 	}
 
 	@Override
 	public List<User> getAll() {
-		// TODO Auto-generated method stub
 		return (List<User>) userRepository.findAll();
 	}
 
@@ -44,6 +42,18 @@ public class UserServiceImpl implements IUserService{
 	@Override
 	public void delete(long id) {
 		userRepository.deleteById(id);
+		
+	}
+
+	@Override
+	public void login(String username, String password) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void register(String username, String password) {
+		// TODO Auto-generated method stub
 		
 	}
 
