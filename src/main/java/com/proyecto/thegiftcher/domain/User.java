@@ -16,9 +16,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 @Entity
 @Table(name = "usertg")
 public class User {
@@ -53,18 +50,14 @@ public class User {
 	@Column(name="profile_image")
 	Byte profileImage;
 	
-<<<<<<< HEAD
+
 	@ManyToMany
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "user_wish",
                joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "wish_id", referencedColumnName = "id"))
     private Set<Wish> wishes = new HashSet<>();
-	
-	public User(@NotEmpty String name, String lastName, @NotEmpty String mail, @NotEmpty String password,
-=======
+
 	public User(@NotEmpty String username, @NotEmpty String name, String lastName, @NotEmpty String mail, @NotEmpty String password,
->>>>>>> b4ed02eebf205248dcceef716ff0ac91618962ad
 			@NotNull Timestamp birthday, Byte profileImage) {
 		super();
 		this.username = username;
