@@ -1,6 +1,4 @@
 package com.proyecto.thegiftcher.domain;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -13,12 +11,12 @@ import java.util.Set;
 
 @Entity
 @Table(name = "category")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Category implements Serializable {
 
-    private static final long serialVersionUID = 1L;
 
-    @Id
+	private static final long serialVersionUID = 3845999709210525876L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
