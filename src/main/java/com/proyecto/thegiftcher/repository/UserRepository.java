@@ -7,6 +7,6 @@ import com.proyecto.thegiftcher.domain.User;
 
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
-	
+	public User findByEmail(String email);
 
 }
