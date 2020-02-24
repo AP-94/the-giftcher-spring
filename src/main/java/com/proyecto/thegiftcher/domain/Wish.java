@@ -8,7 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,8 +43,8 @@ public class Wish implements Serializable {
     private String online_shop;
 
     @NotNull
-    @Column(name = "category", nullable = false)
-    private String category;
+    @Column(name = "category_id", nullable = false)
+    private int categoryId;
 
     @Lob
     @Column(name = "image")
@@ -61,8 +61,8 @@ public class Wish implements Serializable {
     private String location;
 
     @NotNull
-    @Column(name = "date", nullable = false)
-    private LocalDate date;
+    @Column(name = "inser_date", nullable = false)
+    private Timestamp insert_date;
 
     @ManyToMany(mappedBy = "wishes")
     @JsonIgnore
@@ -145,17 +145,17 @@ public class Wish implements Serializable {
         this.online_shop = online_shop;
     }
 
-    public String getCategory() {
-        return category;
+    public int getCategory() {
+        return categoryId;
     }
 
-    public Wish category(String category) {
-        this.category = category;
+    public Wish category(int categoryId) {
+        this.categoryId = categoryId;
         return this;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCategory(int categoryId) {
+        this.categoryId = categoryId;
     }
 
     public byte[] getImage() {
@@ -210,17 +210,17 @@ public class Wish implements Serializable {
         this.location = location;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public Timestamp getDate() {
+        return insert_date;
     }
 
-    public Wish date(LocalDate date) {
-        this.date = date;
+    public Wish date(Timestamp insert_date) {
+        this.insert_date = insert_date;
         return this;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setDate(Timestamp insert_date) {
+        this.insert_date = insert_date;
     }
 
     public Set<User> getUsers() {
@@ -236,17 +236,13 @@ public class Wish implements Serializable {
         this.users = users;
     }
 
-    public Category getCateg() {
-        return categ;
-    }
-
-    public Wish categ(Category category) {
-        this.categ = category;
+    public Wish categ(Category categoryId) {
+        this.categ = categoryId;
         return this;
     }
 
-    public void setCateg(Category category) {
-        this.categ = category;
+    public void setCateg(Category categoryId) {
+        this.categ = categoryId;
     }
     
 
