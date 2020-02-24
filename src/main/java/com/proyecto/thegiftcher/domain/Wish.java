@@ -64,11 +64,11 @@ public class Wish implements Serializable {
     private LocalDate date;
 
     @ManyToMany(mappedBy = "wishes")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnore
     private Set<User> users = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private Category categ;
 
     public Long getId() {

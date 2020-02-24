@@ -16,6 +16,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "usertg")
 public class User {
@@ -52,6 +54,7 @@ public class User {
 	
 
 	@ManyToMany
+	@JsonIgnore
     @JoinTable(name = "user_wish",
                joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "wish_id", referencedColumnName = "id"))
@@ -194,8 +197,11 @@ public class User {
     public String toString() {
         return "User{" +
             "id=" + getId() +
+            ", userName='" + getUsername() + "'" +
             ", name='" + getName() + "'" +
             ", last_name='" + getLastName() + "'" +
+            ", mail='" + getMail() + "'" +
+            ", password='" + getPassword() + "'" +
             ", birthday='" + getBirthday() + "'" +
             ", profile_image='" + getProfileImage() + "'" +
             "}";

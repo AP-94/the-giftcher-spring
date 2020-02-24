@@ -2,6 +2,8 @@ package com.proyecto.thegiftcher.domain;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -26,7 +28,7 @@ public class Category implements Serializable {
     private String categoryName;
 
     @OneToMany(mappedBy = "categ")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonIgnore
     private Set<Wish> wishes = new HashSet<>();
 
     public static long getSerialversionuid() {
