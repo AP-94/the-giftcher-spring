@@ -24,7 +24,7 @@ public class Wish implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotEmpty
     @Size(min = 3, max = 100)
     @Column(name = "name", length = 100, nullable = false)
     private String name;
@@ -32,8 +32,8 @@ public class Wish implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @NotNull
-    @Column(name = "price", nullable = false)
+    @NotEmpty
+    @Column(name = "price")
     private Float price;
 
     @Column(name = "shop")
@@ -42,8 +42,8 @@ public class Wish implements Serializable {
     @Column(name = "online_shop")
     private String online_shop;
 
-    @NotNull
-    @Column(name = "category_id", nullable = false)
+    @NotEmpty
+    @Column(name = "categoryid")
     private int categoryId;
 
     @Lob
@@ -57,11 +57,11 @@ public class Wish implements Serializable {
     private Boolean reserved;
 
     @Size(min = 4, max = 50)
-    @Column(name = "location", length = 50)
+    @Column(name = "location")
     private String location;
 
-    @NotNull
-    @Column(name = "inser_date", nullable = false)
+    @NotEmpty
+    @Column(name = "inser_date")
     private Timestamp insert_date;
 
     @ManyToMany(mappedBy = "wishes")
