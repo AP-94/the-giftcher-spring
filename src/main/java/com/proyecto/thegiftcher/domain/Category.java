@@ -25,9 +25,9 @@ public class Category implements Serializable {
     @Column(name = "category_name", length = 50, nullable = false)
     private String categoryName;
 
-    @OneToMany(mappedBy = "categ")
-    @JsonIgnore
-    private Set<Wish> wishes = new HashSet<>();
+//    @OneToMany(mappedBy = "categoryid")
+//    @JsonIgnore
+//    private Set<Wish> wishes = new HashSet<>();
 
     public static long getSerialversionuid() {
 		return serialVersionUID;
@@ -54,30 +54,30 @@ public class Category implements Serializable {
         this.categoryName = categoryName;
     }
 
-    public Set<Wish> getWishes() {
-        return wishes;
-    }
+//    public Set<Wish> getWishes() {
+//        return wishes;
+//    }
+//
+//    public Category wishes(Set<Wish> wishes) {
+//        this.wishes = wishes;
+//        return this;
+//    }
 
-    public Category wishes(Set<Wish> wishes) {
-        this.wishes = wishes;
-        return this;
-    }
+//    public Category addWish(Wish wish) {
+//        this.wishes.add(wish);
+//        wish.setCategory(this);
+//        return this;
+//    }
+//
+//    public Category removeWish(Wish wish) {
+//        this.wishes.remove(wish);
+//        wish.setCategory(null);
+//        return this;
+//    }
 
-    public Category addWish(Wish wish) {
-        this.wishes.add(wish);
-        wish.setCateg(this);
-        return this;
-    }
-
-    public Category removeWish(Wish wish) {
-        this.wishes.remove(wish);
-        wish.setCateg(null);
-        return this;
-    }
-
-    public void setWishes(Set<Wish> wishes) {
-        this.wishes = wishes;
-    }
+//    public void setWishes(Set<Wish> wishes) {
+//        this.wishes = wishes;
+//    }
 
     @Override
     public boolean equals(Object o) {

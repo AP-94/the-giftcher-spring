@@ -1,8 +1,6 @@
 package com.proyecto.thegiftcher.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -15,7 +13,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "wish")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Wish implements Serializable {
 
 	private static final long serialVersionUID = 1205558563863494858L;
@@ -61,16 +58,16 @@ public class Wish implements Serializable {
     private String location;
 
     @NotEmpty
-    @Column(name = "inser_date")
+    @Column(name = "insert_date")
     private Timestamp insert_date;
 
     @ManyToMany(mappedBy = "wishes")
     @JsonIgnore
     private Set<User> users = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
-    private Category categ;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JsonIgnore
+//    private Category category;
 
     public Long getId() {
         return id;
@@ -236,14 +233,14 @@ public class Wish implements Serializable {
         this.users = users;
     }
 
-    public Wish categ(Category categoryId) {
-        this.categ = categoryId;
-        return this;
-    }
-
-    public void setCateg(Category categoryId) {
-        this.categ = categoryId;
-    }
+//    public Wish category(Category categoryId) {
+//        this.category = categoryId;
+//        return this;
+//    }
+//
+//    public void setCategory(Category categoryId) {
+//        this.category = categoryId;
+//    }
     
 
     @Override
