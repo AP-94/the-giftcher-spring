@@ -8,5 +8,7 @@ import com.proyecto.thegiftcher.domain.User;
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
 	public User findByMail(String mail);
+	public Boolean existsByUsername(String username);
+	User findByUsername(String username);
 
 }

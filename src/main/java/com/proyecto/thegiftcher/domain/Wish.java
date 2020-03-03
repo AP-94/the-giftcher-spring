@@ -64,8 +64,6 @@ public class Wish implements Serializable {
     @ManyToMany(mappedBy = "wishes")
     @JsonIgnore
     private Set<User> users = new HashSet<>();
-   
-    //Commit de prueba
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JsonIgnore
