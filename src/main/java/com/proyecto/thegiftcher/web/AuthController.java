@@ -21,8 +21,9 @@ import com.proyecto.thegiftcher.domain.JwtResponse;
 import com.proyecto.thegiftcher.service.JwtUserDetailsService;
 
 @RestController
+@CrossOrigin
 public class AuthController {
-	
+
 	private final static Logger LOGGER = Logger.getLogger("JwtAuthenticationController");
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -30,19 +31,21 @@ public class AuthController {
 	private JwtTokenUtil jwtTokenUtil;
 	@Autowired
 	private JwtUserDetailsService jwtUserDetailsService;
-	/*
-	 * endpoint para que el usuario se autentique con su usuario y contraseña y obtenga el token
-	 */
-	@CrossOrigin(origins = "http://localhost:4200")
+	
+//	 endpoint para que el usuario se autentique con su usuario y contraseña y
+//	 obtenga el token
+	 
+
 	@PostMapping(value = "/login")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
-		LOGGER.log(Level.INFO, "******** "+authenticationRequest.getUsername()+" "+authenticationRequest.getPassword());
+		LOGGER.log(Level.INFO,
+				"******** " + authenticationRequest.getUsername() + " " + authenticationRequest.getPassword());
 		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 		final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 		final String token = jwtTokenUtil.generateToken(userDetails);
 		return ResponseEntity.ok(new JwtResponse(token));
 	}
-		
+
 	private void authenticate(String username, String password) throws Exception {
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));

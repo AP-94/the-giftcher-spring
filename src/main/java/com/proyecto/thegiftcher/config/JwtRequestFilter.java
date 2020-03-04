@@ -1,5 +1,6 @@
 
 package com.proyecto.thegiftcher.config;
+
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,76 +18,70 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
+	@Autowired
+	private JwtUserDetailsService jwtUserDetailsService;
 
-    @Autowired
-    private JwtUserDetailsService jwtUserDetailsService;
+	private final JwtTokenUtil jwtTokenUtil;
 
-    private final JwtTokenUtil jwtTokenUtil;
+	public JwtRequestFilter(JwtTokenUtil jwtTokenUtil) {
+		this.jwtTokenUtil = jwtTokenUtil;
+	}
 
-    public JwtRequestFilter(JwtTokenUtil jwtTokenUtil) {
-        this.jwtTokenUtil = jwtTokenUtil;
-    }
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+			throws ServletException, IOException {
 
-            throws ServletException, IOException {
+		final String requestTokenHeader = request.getHeader("Authorization");
 
-        final String requestTokenHeader = request.getHeader("Authorization");
+		String username = null;
 
-        String username = null;
+		String jwtToken = null;
 
-        String jwtToken = null;
+		if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
 
+			jwtToken = requestTokenHeader.substring(7);
 
-        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
+			try {
 
-            jwtToken = requestTokenHeader.substring(7);
+				username = jwtTokenUtil.getUsernameFromToken(jwtToken);
 
-            try {
+			} catch (IllegalArgumentException e) {
 
-                username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+				System.out.println("Unable to get JWT Token");
 
-            } catch (IllegalArgumentException e) {
+			} catch (ExpiredJwtException e) {
 
-                System.out.println("Unable to get JWT Token");
+				System.out.println("JWT Token has expired");
 
-            } catch (ExpiredJwtException e) {
+			}
 
-                System.out.println("JWT Token has expired");
+		} else {
 
-            }
+			logger.warn("JWT Token does not begin with Bearer String");
 
-        } else {
+		}
 
-            logger.warn("JWT Token does not begin with Bearer String");
+		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-        }
+			UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
 
+			if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 
-            UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
+						userDetails, null, userDetails.getAuthorities());
 
+				usernamePasswordAuthenticationToken
 
-            if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
+						.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-
-                        userDetails, null, userDetails.getAuthorities());
-
-                usernamePasswordAuthenticationToken
-
-                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-            }
-        }
-        chain.doFilter(request, response);
-    }
+				SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+			}
+		}
+		chain.doFilter(request, response);
+	}
 }

@@ -21,47 +21,47 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "usertg")
 public class User {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
-	
-	@Column(name="username")
+
+	@Column(name = "username")
 	@NotEmpty
 	String username;
-	
-	@Column(name="name")
+
+	@Column(name = "name")
 	@NotEmpty
 	String name;
-	
-	@Column(name="last_name")
+
+	@Column(name = "last_name")
 	String lastName;
-	
-	@Column(name="mail")
+
+	@Column(name = "mail")
 	@NotEmpty
 	String mail;
-	
-	@Column(name="password")
+
+	@Column(name = "password")
 	@NotEmpty
 	String password;
-	
-	@Column(name="birthday")
+
+	@Column(name = "birthday")
 	@NotNull
 	Timestamp birthday;
-	
-	@Column(name="profile_image")
+
+	@Column(name = "profile_image")
 	Byte profileImage;
 	
+	@Column(name = "token")
+	String token;
 
 	@ManyToMany
 	@JsonIgnore
-    @JoinTable(name = "user_wish",
-               joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "wish_id", referencedColumnName = "id"))
-    private Set<Wish> wishes = new HashSet<>();
+	@JoinTable(name = "user_wish", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "wish_id", referencedColumnName = "id"))
+	private Set<Wish> wishes = new HashSet<>();
 
-	public User(@NotEmpty String username, @NotEmpty String name, String lastName, @NotEmpty String mail, @NotEmpty String password,
-			@NotNull Timestamp birthday, Byte profileImage) {
+	public User(@NotEmpty String username, @NotEmpty String name, String lastName, @NotEmpty String mail,
+			@NotEmpty String password, @NotNull Timestamp birthday, Byte profileImage) {
 		super();
 		this.username = username;
 		this.name = name;
@@ -87,123 +87,103 @@ public class User {
 		return id;
 	}
 
-
 	public void setId(Long id) {
 		this.id = id;
 	}
-
 
 	public String getName() {
 		return name;
 	}
 
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
 
 	public String getLastName() {
 		return lastName;
 	}
 
-
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-
 
 	public String getMail() {
 		return mail;
 	}
 
-
 	public void setMail(String mail) {
 		this.mail = mail;
 	}
-
 
 	public String getPassword() {
 		return password;
 	}
 
-
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
 
 	public Timestamp getBirthday() {
 		return birthday;
 	}
 
-
 	public void setBirthday(Timestamp birthday) {
 		this.birthday = birthday;
 	}
-
 
 	public Byte getProfileImage() {
 		return profileImage;
 	}
 
-
 	public void setProfileImage(Byte profileImage) {
 		this.profileImage = profileImage;
 	}
-	
+
 	public Set<Wish> getWishes() {
-        return wishes;
-    }
+		return wishes;
+	}
 
-    public User wishes(Set<Wish> wishes) {
-        this.wishes = wishes;
-        return this;
-    }
+	public User wishes(Set<Wish> wishes) {
+		this.wishes = wishes;
+		return this;
+	}
 
-    public User addWish(Wish wish) {
-        this.wishes.add(wish);
-        wish.getUsers().add(this);
-        return this;
-    }
+	public User addWish(Wish wish) {
+		this.wishes.add(wish);
+		wish.getUsers().add(this);
+		return this;
+	}
 
-    public User removeWish(Wish wish) {
-        this.wishes.remove(wish);
-        wish.getUsers().remove(this);
-        return this;
-    }
+	public User removeWish(Wish wish) {
+		this.wishes.remove(wish);
+		wish.getUsers().remove(this);
+		return this;
+	}
 
-    public void setWishes(Set<Wish> wishes) {
-        this.wishes = wishes;
-    }
-	
+	public void setWishes(Set<Wish> wishes) {
+		this.wishes = wishes;
+	}
+
 	@Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof User)) {
-            return false;
-        }
-        return id != null && id.equals(((User) o).id);
-    }
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof User)) {
+			return false;
+		}
+		return id != null && id.equals(((User) o).id);
+	}
 
-    @Override
-    public int hashCode() {
-        return 31;
-    }
+	@Override
+	public int hashCode() {
+		return 31;
+	}
 
-    @Override
-    public String toString() {
-        return "User{" +
-            "id=" + getId() +
-            ", userName='" + getUsername() + "'" +
-            ", name='" + getName() + "'" +
-            ", last_name='" + getLastName() + "'" +
-            ", mail='" + getMail() + "'" +
-            ", password='" + getPassword() + "'" +
-            ", birthday='" + getBirthday() + "'" +
-            ", profile_image='" + getProfileImage() + "'" +
-            "}";
-    }
+	@Override
+	public String toString() {
+		return "User{" + "id=" + getId() + ", userName='" + getUsername() + "'" + ", name='" + getName() + "'"
+				+ ", last_name='" + getLastName() + "'" + ", mail='" + getMail() + "'" + ", password='" + getPassword()
+				+ "'" + ", birthday='" + getBirthday() + "'" + ", profile_image='" + getProfileImage() + "'" + "}";
+	}
 }

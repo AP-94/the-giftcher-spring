@@ -3,11 +3,8 @@ package com.proyecto.thegiftcher.web;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.ValidationException;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,67 +22,48 @@ import com.proyecto.thegiftcher.service.IUserService;
 
 @RestController
 public class UserController {
-	
+
 	@Autowired
 	IUserService userService;
-	
+
 	@Autowired
 	UserRepository userRepository;
 
 	@GetMapping(path = "/users")
-	public List<User> getUsers(){
+	public List<User> getUsers() {
 		return userService.getAll();
 	}
-	
+
 	@GetMapping(path = "/user/{id}")
-	public User getOne(@PathVariable(value = "id")long id) {
+	public User getOne(@PathVariable(value = "id") long id) {
 		return userService.get(id);
 	}
-	
-	 @PostMapping("/user")
-	    public Boolean create(@RequestBody Map<String, String> body, @RequestBody Timestamp birthday, @RequestBody Byte profileImage) throws NoSuchAlgorithmException {
-	        String username = body.get("username");
-	        if (userRepository.existsByUsername(username)){
 
-	            throw new ValidationException("Username already existed");
+	@PostMapping("/register")
+	public Boolean create(@RequestBody User user) throws NoSuchAlgorithmException {
+		String username = user.getUsername();
+		if (userRepository.existsByUsername(username)) {
+			throw new ValidationException("Username already existed");
+		}
 
-	        }
-	        
-	        String name = body.get("name");
-	        String lastName = body.get("lastName");
-	        String mail = body.get("mail");
-	        String password = body.get("password");
-	        String encodedPassword = new BCryptPasswordEncoder().encode(password);
-//	        String hashedPassword = hashData.get_SHA_512_SecurePassword(password);
-	        userRepository.save(new User(username, name, lastName, mail, encodedPassword, birthday, profileImage));
-	        return true;
-	    }
-	
-	/*Prueba para ver que todo bien para añadir un usuario (se debe eliminar)
-	@PostMapping(path = "/user")
-	public void add(User user) {
-		userService.post(user);
-	}*/
-	
-	
-	@PostMapping(path = "/register")
-	public void register(@RequestBody User user) {
-		userService.post(user);
+		String name = user.getName();
+		String lastName = user.getLastName();
+		String mail = user.getMail();
+		String password = user.getPassword();
+		String encodedPassword = new BCryptPasswordEncoder().encode(password);
+		Timestamp birthday = user.getBirthday();
+		Byte profileImage = user.getProfileImage();
+		userRepository.save(new User(username, name, lastName, mail, encodedPassword, birthday, profileImage));
+		return true;
 	}
-	
-	@GetMapping(path = "/login")
-	public void login(User user) {
-		userService.post(user);
-	}
-	
-	
+
 	@PutMapping(path = "/user/{id}")
-	public void update(User user, @PathVariable(value = "id")long id) {
+	public void update(User user, @PathVariable(value = "id") long id) {
 		userService.put(user, id);
 	}
 
 	@DeleteMapping(path = "/user/{id}")
-	public void delete(@PathVariable(value = "id")long id) {
+	public void delete(@PathVariable(value = "id") long id) {
 		userService.delete(id);
 	}
 }
