@@ -46,15 +46,8 @@ public class UserServiceImpl implements IUserService{
 	}
 
 	@Override
-	public void login(String username, String password) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public void register(String username, String password) {
-		// TODO Auto-generated method stub
-		
+	public User getByUsername(String username) {
+		return userRepository.findByUsername(username);
 	}
 
 }

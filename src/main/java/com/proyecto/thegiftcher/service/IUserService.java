@@ -7,11 +7,10 @@ import com.proyecto.thegiftcher.domain.User;
 public interface IUserService {
 	
 	public User get(long id);
+	public User getByUsername(String username);
 	public List<User> getAll();
 	public void post(User user);
 	public void put(User user, long id);
 	public void delete(long id);
-	public void login(String username, String password);
-	public void register(String username, String password);
 
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto.thegiftcher.config.JwtTokenUtil;
 import com.proyecto.thegiftcher.domain.User;
+import com.proyecto.thegiftcher.service.IUserService;
 import com.proyecto.thegiftcher.service.JwtUserDetailsService;
 
 @RestController
@@ -30,6 +31,8 @@ public class AuthController {
 	private JwtTokenUtil jwtTokenUtil;
 	@Autowired
 	private JwtUserDetailsService jwtUserDetailsService;
+	@Autowired
+	private IUserService userService;
 	
 //	 endpoint para que el usuario se autentique con su usuario y contraseña y
 //	 obtenga el token
@@ -40,9 +43,12 @@ public class AuthController {
 		LOGGER.log(Level.INFO,
 				"******** " + authenticationRequest.getUsername() + " " + authenticationRequest.getPassword());
 		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
-		final UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+		UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+		User user = userService.getByUsername(authenticationRequest.getUsername());
 		final String token = jwtTokenUtil.generateToken(userDetails);
-		return ResponseEntity.ok(new User(authenticationRequest.getUsername(), authenticationRequest.getName(), authenticationRequest.getLastName(), authenticationRequest.getMail(), authenticationRequest.getBirthday(), authenticationRequest.getProfileImage(),token));
+		user.setToken(token);
+		
+		return ResponseEntity.ok(new User(user.getId(), user.getName(), user.getLastName(), user.getUsername(), user.getMail(), user.getBirthday(), user.getProfileImage(), user.getToken()));
 	}
 
 	private void authenticate(String username, String password) throws Exception {

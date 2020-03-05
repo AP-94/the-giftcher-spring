@@ -75,8 +75,9 @@ public class User implements Serializable {
 		this.profileImage = profileImage;
 	}
 	
-	public User(String username, String name, String lastName, String mail,Timestamp birthday, Byte profileImage, String token) {
+	public User(Long id, String username, String name, String lastName, String mail,Timestamp birthday, Byte profileImage, String token) {
 		super();
+		this.id = id;
 		this.username = username;
 		this.name = name;
 		this.lastName = lastName;
