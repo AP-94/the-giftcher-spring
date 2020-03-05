@@ -1,5 +1,6 @@
 package com.proyecto.thegiftcher.domain;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +21,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "usertg")
-public class User {
+public class User implements Serializable {
+
+	private static final long serialVersionUID = 5926468583005150707L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -71,6 +74,29 @@ public class User {
 		this.birthday = birthday;
 		this.profileImage = profileImage;
 	}
+	
+	public User(String username, String name, String lastName, String mail,Timestamp birthday, Byte profileImage, String token) {
+		super();
+		this.username = username;
+		this.name = name;
+		this.lastName = lastName;
+		this.mail = mail;
+		this.birthday = birthday;
+		this.profileImage = profileImage;
+		this.token = token;
+	}
+	
+	public User() {
+		
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
 
 	public String getUsername() {
 		return username;
@@ -79,10 +105,7 @@ public class User {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
-	public User() {
-	}
-
+	
 	public Long getId() {
 		return id;
 	}
@@ -184,6 +207,6 @@ public class User {
 	public String toString() {
 		return "User{" + "id=" + getId() + ", userName='" + getUsername() + "'" + ", name='" + getName() + "'"
 				+ ", last_name='" + getLastName() + "'" + ", mail='" + getMail() + "'" + ", password='" + getPassword()
-				+ "'" + ", birthday='" + getBirthday() + "'" + ", profile_image='" + getProfileImage() + "'" + "}";
+				+ "'" + ", birthday='" + getBirthday() + "'" + ", profile_image='" + getProfileImage() + "'" + ", token='" + getToken() + "'" + "}";
 	}
 }
