@@ -23,13 +23,13 @@ public class Wish implements Serializable {
 
     @NotEmpty
     @Size(min = 3, max = 100)
-    @Column(name = "name", length = 100, nullable = false)
+    @Column(name = "name", length = 100)
     private String name;
 
     @Column(name = "description")
     private String description;
 
-    @NotEmpty
+    @NotNull
     @Column(name = "price")
     private Float price;
 
@@ -39,7 +39,7 @@ public class Wish implements Serializable {
     @Column(name = "online_shop")
     private String online_shop;
 
-    @NotEmpty
+    @NotNull
     @Column(name = "categoryid")
     private int categoryId;
 
@@ -57,7 +57,6 @@ public class Wish implements Serializable {
     @Column(name = "location")
     private String location;
 
-    @NotEmpty
     @Column(name = "insert_date")
     private Timestamp insert_date;
 
@@ -68,7 +67,7 @@ public class Wish implements Serializable {
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JsonIgnore
 //    private Category category;
-
+    
     public Long getId() {
         return id;
     }
