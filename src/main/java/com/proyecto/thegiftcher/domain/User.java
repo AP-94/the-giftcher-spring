@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
@@ -52,6 +53,7 @@ public class User implements Serializable {
 	@NotNull
 	Timestamp birthday;
 
+	@Lob
 	@Column(name = "profile_image")
 	Byte profileImage;
 	

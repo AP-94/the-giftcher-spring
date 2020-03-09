@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.HashSet;
@@ -21,16 +23,18 @@ public class Wish implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
+    
     @Size(min = 3, max = 100)
     @Column(name = "name", length = 100)
+    @NotEmpty
     private String name;
 
     @Column(name = "description")
     private String description;
 
-    @NotNull
+    
     @Column(name = "price")
+    @NotNull
     private Float price;
 
     @Column(name = "shop")
@@ -50,7 +54,7 @@ public class Wish implements Serializable {
     @Column(name = "image_content_type")
     private String imageContentType;
 
-    @Column(name = "reserved")
+	@Column(name = "reserved")
     private Boolean reserved;
 
     @Size(min = 4, max = 50)
@@ -58,6 +62,7 @@ public class Wish implements Serializable {
     private String location;
 
     @Column(name = "insert_date")
+    @CreationTimestamp
     private Timestamp insert_date;
 
     @ManyToMany(mappedBy = "wishes")
@@ -85,7 +90,7 @@ public class Wish implements Serializable {
         return this;
     }
 
-    public void setNombre(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -267,7 +272,7 @@ public class Wish implements Serializable {
             ", price=" + getPrice() +
             ", shop='" + getShop() + "'" +
             ", online_shop='" + getOnlineShop() + "'" +
-            ", category='" + getCategory() + "'" +
+            ", categoryId='" + getCategory() + "'" +
             ", image='" + getImage() + "'" +
             ", imageContentType='" + getImageContentType() + "'" +
             ", reserved='" + isReserved() + "'" +

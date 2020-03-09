@@ -34,6 +34,12 @@ public class WishService implements IWishService {
 	public void put(Wish wish, long id) {
 		wishRepository.findById(id).ifPresent((x) -> {
 			wish.setId(id);
+			wish.setName(wish.getName());
+			wish.setPrice(wish.getPrice());
+			wish.setDescription(wish.getDescription());
+			wish.setCategory(wish.getCategory());
+			wish.setLocation(wish.getLocation());
+			wish.setOnline_shop(wish.getOnlineShop());
 			wishRepository.save(wish);
 		});
 		
