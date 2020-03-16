@@ -1,7 +1,5 @@
 package com.proyecto.thegiftcher.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -9,8 +7,6 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.Set;
 
 
 @Entity
@@ -65,9 +61,10 @@ public class Wish implements Serializable {
     @CreationTimestamp
     private Timestamp insert_date;
 
+    /*
     @ManyToMany(mappedBy = "wishes")
     @JsonIgnore
-    private Set<User> users = new HashSet<>();
+    private Set<User> users = new HashSet<>(); */
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JsonIgnore
@@ -223,19 +220,19 @@ public class Wish implements Serializable {
     public void setDate(Timestamp insert_date) {
         this.insert_date = insert_date;
     }
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public Wish users(Set<User> users) {
-        this.users = users;
-        return this;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
+//
+//    public Set<User> getUsers() {
+//        return users;
+//    }
+//
+//    public Wish users(Set<User> users) {
+//        this.users = users;
+//        return this;
+//    }
+//
+//    public void setUsers(Set<User> users) {
+//        this.users = users;
+//    }
 
 //    public Wish category(Category categoryId) {
 //        this.category = categoryId;

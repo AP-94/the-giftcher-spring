@@ -2,23 +2,15 @@ package com.proyecto.thegiftcher.domain;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "usertg")
@@ -59,11 +51,12 @@ public class User implements Serializable {
 	
 	@Column(name = "token")
 	String token;
-
+	
+	/*
 	@ManyToMany
 	@JsonIgnore
 	@JoinTable(name = "user_wish", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "wish_id", referencedColumnName = "id"))
-	private Set<Wish> wishes = new HashSet<>();
+	private Set<Wish> wishes = new HashSet<>();*/
 
 	public User(@NotEmpty String username, @NotEmpty String name, String lastName, @NotEmpty String mail,
 			@NotEmpty String password, @NotNull Timestamp birthday, Byte profileImage) {
@@ -91,6 +84,13 @@ public class User implements Serializable {
 	
 	public User() {
 		
+	}
+
+	public User(String username, String name, String lastName) {
+		super();
+		this.username = username;
+		this.name = name;
+		this.lastName = lastName;
 	}
 
 	public String getToken() {
@@ -164,7 +164,7 @@ public class User implements Serializable {
 	public void setProfileImage(Byte profileImage) {
 		this.profileImage = profileImage;
 	}
-
+/*
 	public Set<Wish> getWishes() {
 		return wishes;
 	}
@@ -189,7 +189,7 @@ public class User implements Serializable {
 	public void setWishes(Set<Wish> wishes) {
 		this.wishes = wishes;
 	}
-
+*/
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {

@@ -3,10 +3,13 @@ package com.proyecto.thegiftcher.web;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.ValidationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,10 +59,30 @@ public class UserController {
 		userRepository.save(new User(username, name, lastName, mail, encodedPassword, birthday, profileImage));
 		return true;
 	}
-
-	@PutMapping(path = "/user/{id}")
-	public void update(User user, @PathVariable(value = "id") long id) {
-		userService.put(user, id);
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@PostMapping(path = "/user/update_user")
+	public ResponseEntity updateUser(@RequestBody User user) throws Exception {
+		
+		Long id = user.getId();
+		String username = user.getUsername();
+		String name = user.getName();
+		String lastName = user.getLastName();
+		
+		Optional<User> currentUser = userRepository.findById(id);
+		
+		if (currentUser == null) {
+			throw new Exception("User not found");
+		} 
+		
+		User userToUpdate = currentUser.get();
+		userToUpdate.setName(name);
+		userToUpdate.setLastName(lastName);
+		userToUpdate.setUsername(username);
+		userRepository.save(userToUpdate);
+		
+		return new ResponseEntity("Update Success", HttpStatus.OK);
+		
 	}
 
 	@DeleteMapping(path = "/user/{id}")

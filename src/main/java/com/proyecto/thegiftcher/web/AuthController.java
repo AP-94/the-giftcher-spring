@@ -50,7 +50,7 @@ public class AuthController {
 		
 		return ResponseEntity.ok(new User(user.getId(), user.getName(), user.getLastName(), user.getUsername(), user.getMail(), user.getBirthday(), user.getProfileImage(), user.getToken()));
 	}
-
+	
 	private void authenticate(String username, String password) throws Exception {
 		try {
 			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
