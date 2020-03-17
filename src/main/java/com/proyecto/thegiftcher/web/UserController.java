@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto.thegiftcher.domain.User;
 import com.proyecto.thegiftcher.repository.UserRepository;
 import com.proyecto.thegiftcher.service.IUserService;
+import com.proyecto.thegiftcher.web.error.CustomError;
 
 @RestController
 public class UserController {
@@ -46,7 +46,7 @@ public class UserController {
 	public Boolean create(@RequestBody User user) throws NoSuchAlgorithmException {
 		String username = user.getUsername();
 		if (userRepository.existsByUsername(username)) {
-			throw new ValidationException("Username already existed");
+			throw new ValidationException("That username is already taken");
 		}
 
 		String name = user.getName();
@@ -69,6 +69,10 @@ public class UserController {
 		String name = user.getName();
 		String lastName = user.getLastName();
 		
+		if (userRepository.existsByUsername(username)) {
+			throw new CustomError("That username is already taken");
+		}
+		
 		Optional<User> currentUser = userRepository.findById(id);
 		
 		if (currentUser == null) {
@@ -76,14 +80,64 @@ public class UserController {
 		} 
 		
 		User userToUpdate = currentUser.get();
-		userToUpdate.setName(name);
-		userToUpdate.setLastName(lastName);
-		userToUpdate.setUsername(username);
+		
+		if (!name.isEmpty() || name != null) {
+			userToUpdate.setName(name);
+		}
+		if (!lastName.isEmpty() || lastName != null) {
+			userToUpdate.setLastName(lastName);
+		}
+		if (!username.isEmpty() || username != null) {
+			userToUpdate.setUsername(username);
+		}
 		userRepository.save(userToUpdate);
 		
-		return new ResponseEntity("Update Success", HttpStatus.OK);
+		return new ResponseEntity("User updated", HttpStatus.OK);
 		
 	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@PostMapping(path = "/user/update_password")
+	public ResponseEntity updateUserPassword(@RequestBody User user) throws Exception {
+		
+		Long id = user.getId();
+		String password = user.getPassword();
+		
+		Optional<User> currentUser = userRepository.findById(id);
+		
+		if (currentUser == null) {
+			throw new Exception("User not found");
+		} 
+		
+		String encodedPassword = new BCryptPasswordEncoder().encode(password);
+		User userToUpdate = currentUser.get();
+		userToUpdate.setPassword(encodedPassword);
+		userRepository.save(userToUpdate);
+		
+		return new ResponseEntity("User password updated", HttpStatus.OK);
+		
+	}
+	
+	/*@SuppressWarnings({ "rawtypes", "unchecked" })
+	@PostMapping(path = "/user/update_password")
+	public ResponseEntity updateProfileImage(@RequestBody User user) throws Exception {
+		
+		Long id = user.getId();
+		
+		
+		Optional<User> currentUser = userRepository.findById(id);
+		
+		if (currentUser == null) {
+			throw new Exception("User not found");
+		} 
+		
+		User userToUpdate = currentUser.get();
+		userToUpdate.setProfileImage(profileImage);
+		userRepository.save(userToUpdate);
+		
+		return new ResponseEntity("User profile image updated", HttpStatus.OK);
+		
+	}*/
 
 	@DeleteMapping(path = "/user/{id}")
 	public void delete(@PathVariable(value = "id") long id) {
