@@ -11,6 +11,7 @@ public interface IUserService {
 	public List<User> getAll();
 	public void post(User user);
 	public void put(User user, long id);
+	public void updateUser(User user);
 	public void delete(long id);
 
 }

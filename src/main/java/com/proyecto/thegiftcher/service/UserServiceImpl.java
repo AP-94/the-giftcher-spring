@@ -38,6 +38,14 @@ public class UserServiceImpl implements IUserService{
 		});
 		
 	}
+	
+	@Override
+	public void updateUser(User user) {
+		if (userRepository.existsByUsername(user.getUsername())) {
+			user.setId(user.getId());
+			userRepository.save(user);
+		}
+	}
 
 	@Override
 	public void delete(long id) {

@@ -33,9 +33,6 @@ public class AuthController {
 	private JwtUserDetailsService jwtUserDetailsService;
 	@Autowired
 	private IUserService userService;
-	
-//	 endpoint para que el usuario se autentique con su usuario y contraseña y
-//	 obtenga el token
 	 
 
 	@PostMapping(value = "/login")
