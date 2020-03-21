@@ -1,36 +1,31 @@
 package com.proyecto.thegiftcher.web;
 
-import java.security.NoSuchAlgorithmException;
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.Optional;
-
-import javax.validation.ValidationException;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.proyecto.thegiftcher.domain.User;
 import com.proyecto.thegiftcher.repository.UserRepository;
 import com.proyecto.thegiftcher.service.IUserService;
 import com.proyecto.thegiftcher.web.error.CustomError;
 import com.proyecto.thegiftcher.web.error.UnauthorizedError;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.ValidationException;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class UserController {
 
-	@Autowired
-	IUserService userService;
+	private final IUserService userService;
+	private final UserRepository userRepository;
 
-	@Autowired
-	UserRepository userRepository;
+	public UserController(IUserService userService, UserRepository userRepository) {
+		this.userRepository = userRepository;
+		this.userService = userService;
+	}
 
 	@GetMapping(path = "/users")
 	public List<User> getUsers() {
@@ -61,7 +56,7 @@ public class UserController {
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@PostMapping(path = "/user/update_user")
+	@PutMapping(path = "/user/update_user")
 	public ResponseEntity updateUser(@RequestBody User user) throws Exception {
 		
 		Long id = user.getId();
@@ -71,7 +66,7 @@ public class UserController {
 		
 		Optional<User> currentUser = userRepository.findById(id);
 		
-		if (currentUser == null) {
+		if(!currentUser.isPresent()){
 			throw new Exception("User not found");
 		} 
 		
@@ -79,6 +74,7 @@ public class UserController {
 		
 		if (userRepository.existsByUsername(username)) {
 			if (userToUpdate.getUsername().equals(username)) {
+				//
 			} else {
 				throw new CustomError("That username is already taken");
 			}
@@ -94,7 +90,7 @@ public class UserController {
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@PostMapping(path = "/user/update_password")
+	@PutMapping(path = "/user/update_password")
 	public ResponseEntity updateUserPassword(@RequestBody User user, String oldPassword) throws Exception {
 		
 		Long id = user.getId();
@@ -102,7 +98,7 @@ public class UserController {
 		
 		Optional<User> currentUser = userRepository.findById(id);
 		
-		if (currentUser == null) {
+		if (!currentUser.isPresent()) {
 			throw new Exception("User not found");
 		} 
 		User userToUpdate = currentUser.get();
@@ -142,14 +138,12 @@ public class UserController {
 	}*/
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@PostMapping(path = "/user/delete_account")
-	public ResponseEntity delete(@RequestBody User user) throws Exception {
-		
-		Long id = user.getId();
+	@DeleteMapping(path = "/user/{id}")
+	public ResponseEntity delete(@PathVariable long id) throws Exception {
 		
 		Optional<User> currentUser = userRepository.findById(id);
 		
-		if (currentUser == null) {
+		if (!currentUser.isPresent()) {
 			throw new Exception("User not found");
 		} 
 		

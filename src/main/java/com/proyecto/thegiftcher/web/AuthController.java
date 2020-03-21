@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.proyecto.thegiftcher.config.JwtTokenUtil;
 import com.proyecto.thegiftcher.domain.User;
 import com.proyecto.thegiftcher.service.IUserService;
-import com.proyecto.thegiftcher.service.JwtUserDetailsService;
+import com.proyecto.thegiftcher.service.Impl.JwtUserDetailsServiceImpl;
 
 @RestController
 @CrossOrigin
@@ -30,7 +30,7 @@ public class AuthController {
 	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
 	@Autowired
-	private JwtUserDetailsService jwtUserDetailsService;
+	private JwtUserDetailsServiceImpl jwtUserDetailsServiceImpl;
 	@Autowired
 	private IUserService userService;
 	 
@@ -40,7 +40,7 @@ public class AuthController {
 		LOGGER.log(Level.INFO,
 				"******** " + authenticationRequest.getUsername() + " " + authenticationRequest.getPassword());
 		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
-		UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+		UserDetails userDetails = jwtUserDetailsServiceImpl.loadUserByUsername(authenticationRequest.getUsername());
 		User user = userService.getByUsername(authenticationRequest.getUsername());
 		final String token = jwtTokenUtil.generateToken(userDetails);
 		user.setToken(token);

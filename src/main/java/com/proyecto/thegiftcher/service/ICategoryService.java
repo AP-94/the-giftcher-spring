@@ -6,7 +6,7 @@ import com.proyecto.thegiftcher.domain.Category;
 
 public interface ICategoryService {
 	
-	public Category get(long id);
-	public List<Category> getAll();
+	Category get(long id);
+	List<Category> getAll();
 
 }

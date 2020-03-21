@@ -1,7 +1,8 @@
-package com.proyecto.thegiftcher.service;
+package com.proyecto.thegiftcher.service.Impl;
 
 import java.util.List;
 
+import com.proyecto.thegiftcher.service.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

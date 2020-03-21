@@ -4,14 +4,17 @@ import java.util.List;
 
 import com.proyecto.thegiftcher.domain.User;
 
+import javax.servlet.http.HttpServletRequest;
+
 public interface IUserService {
 	
-	public User get(long id);
-	public User getByUsername(String username);
-	public List<User> getAll();
-	public void post(User user);
-	public void put(User user, long id);
-	public void updateUser(User user);
-	public void delete(long id);
+	User get(long id);
+	User getByUsername(String username);
+	User getUserLogged(HttpServletRequest request);
+	List<User> getAll();
+	void post(User user);
+	void put(User user, long id);
+	void updateUser(User user);
+	void delete(long id);
 
 }

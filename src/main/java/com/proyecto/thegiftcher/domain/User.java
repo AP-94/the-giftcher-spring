@@ -22,41 +22,27 @@ public class User implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
 
-	@Column(name = "username")
 	@NotEmpty
 	String username;
 
-	@Column(name = "name")
 	@NotEmpty
 	String name;
 
-	@Column(name = "last_name")
 	String lastName;
 
-	@Column(name = "mail")
 	@NotEmpty
 	String mail;
 
-	@Column(name = "password")
 	@NotEmpty
 	String password;
 
-	@Column(name = "birthday")
 	@NotNull
 	Timestamp birthday;
 
 	@Lob
-	@Column(name = "profile_image")
 	Byte profileImage;
-	
-	@Column(name = "token")
+
 	String token;
-	
-	/*
-	@ManyToMany
-	@JsonIgnore
-	@JoinTable(name = "user_wish", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "wish_id", referencedColumnName = "id"))
-	private Set<Wish> wishes = new HashSet<>();*/
 
 	public User(@NotEmpty String username, @NotEmpty String name, String lastName, @NotEmpty String mail,
 			@NotEmpty String password, @NotNull Timestamp birthday, Byte profileImage) {
@@ -164,32 +150,7 @@ public class User implements Serializable {
 	public void setProfileImage(Byte profileImage) {
 		this.profileImage = profileImage;
 	}
-/*
-	public Set<Wish> getWishes() {
-		return wishes;
-	}
 
-	public User wishes(Set<Wish> wishes) {
-		this.wishes = wishes;
-		return this;
-	}
-
-	public User addWish(Wish wish) {
-		this.wishes.add(wish);
-		wish.getUsers().add(this);
-		return this;
-	}
-
-	public User removeWish(Wish wish) {
-		this.wishes.remove(wish);
-		wish.getUsers().remove(this);
-		return this;
-	}
-
-	public void setWishes(Set<Wish> wishes) {
-		this.wishes = wishes;
-	}
-*/
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {

@@ -19,56 +19,46 @@ public class Wish implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    private Long userId;
+
     
     @Size(min = 3, max = 100)
-    @Column(name = "name", length = 100)
     @NotEmpty
     private String name;
 
-    @Column(name = "description")
     private String description;
 
-    
-    @Column(name = "price")
     @NotNull
     private Float price;
 
-    @Column(name = "shop")
     private String shop;
 
-    @Column(name = "online_shop")
     private String online_shop;
 
     @NotNull
-    @Column(name = "categoryid")
     private int categoryId;
 
     @Lob
-    @Column(name = "image")
     private byte[] image;
 
-    @Column(name = "image_content_type")
     private String imageContentType;
 
-	@Column(name = "reserved")
     private Boolean reserved;
 
     @Size(min = 4, max = 50)
-    @Column(name = "location")
     private String location;
 
-    @Column(name = "insert_date")
     @CreationTimestamp
     private Timestamp insert_date;
 
-    /*
-    @ManyToMany(mappedBy = "wishes")
-    @JsonIgnore
-    private Set<User> users = new HashSet<>(); */
+    public Long getUserId() {
+        return userId;
+    }
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JsonIgnore
-//    private Category category;
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
     
     public Long getId() {
         return id;
@@ -220,29 +210,6 @@ public class Wish implements Serializable {
     public void setDate(Timestamp insert_date) {
         this.insert_date = insert_date;
     }
-//
-//    public Set<User> getUsers() {
-//        return users;
-//    }
-//
-//    public Wish users(Set<User> users) {
-//        this.users = users;
-//        return this;
-//    }
-//
-//    public void setUsers(Set<User> users) {
-//        this.users = users;
-//    }
-
-//    public Wish category(Category categoryId) {
-//        this.category = categoryId;
-//        return this;
-//    }
-//
-//    public void setCategory(Category categoryId) {
-//        this.category = categoryId;
-//    }
-    
 
     @Override
     public boolean equals(Object o) {

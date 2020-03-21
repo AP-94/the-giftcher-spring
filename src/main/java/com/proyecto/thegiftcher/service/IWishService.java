@@ -4,12 +4,14 @@ import java.util.List;
 
 import com.proyecto.thegiftcher.domain.Wish;
 
-public interface IWishService {
-	
-	public Wish get(long id);
-	public List<Wish> getAll();
-	public void post(Wish wish);
-	public void put(Wish wish, long id);
-	public void delete(long id);
+import javax.servlet.http.HttpServletRequest;
 
+public interface IWishService {
+
+	List<Wish> getAll(HttpServletRequest userId);
+	Wish get(long id, HttpServletRequest request) throws Exception;
+	void create(Wish wish, HttpServletRequest request);
+	void copyWishFromUser(long userId, long id, HttpServletRequest request);
+	void modify(Wish wish, long id, HttpServletRequest request);
+	void delete(long id, HttpServletRequest request);
 }

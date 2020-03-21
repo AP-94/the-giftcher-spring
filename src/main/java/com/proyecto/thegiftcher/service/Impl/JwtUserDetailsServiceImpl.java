@@ -1,4 +1,4 @@
-package com.proyecto.thegiftcher.service;
+package com.proyecto.thegiftcher.service.Impl;
 
 import java.util.ArrayList;
 
@@ -11,7 +11,7 @@ import com.proyecto.thegiftcher.domain.User;
 import com.proyecto.thegiftcher.repository.UserRepository;
 
 @Component
-public class JwtUserDetailsService implements UserDetailsService{
+public class JwtUserDetailsServiceImpl implements UserDetailsService{
 	
 	 	@Autowired
 	    private UserRepository userRepository;
