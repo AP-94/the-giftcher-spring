@@ -1,4 +1,4 @@
-package com.proyecto.thegiftcher.web;
+package com.proyecto.thegiftcher.web.controller;
 
 import com.proyecto.thegiftcher.domain.User;
 import com.proyecto.thegiftcher.repository.UserRepository;

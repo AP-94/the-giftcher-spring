@@ -1,16 +1,10 @@
 package com.proyecto.thegiftcher.domain;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "usertg")
@@ -20,29 +14,29 @@ public class User implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+	private Long id;
 
 	@NotEmpty
-	String username;
+	private String username;
 
 	@NotEmpty
-	String name;
+	private String name;
 
-	String lastName;
-
-	@NotEmpty
-	String mail;
+	private String lastName;
 
 	@NotEmpty
-	String password;
+	private String mail;
+
+	@NotEmpty
+	private String password;
 
 	@NotNull
-	Timestamp birthday;
+	private Timestamp birthday;
 
 	@Lob
-	Byte profileImage;
+	private Byte profileImage;
 
-	String token;
+	private String token;
 
 	public User(@NotEmpty String username, @NotEmpty String name, String lastName, @NotEmpty String mail,
 			@NotEmpty String password, @NotNull Timestamp birthday, Byte profileImage) {
@@ -169,8 +163,16 @@ public class User implements Serializable {
 
 	@Override
 	public String toString() {
-		return "User{" + "id=" + getId() + ", userName='" + getUsername() + "'" + ", name='" + getName() + "'"
-				+ ", last_name='" + getLastName() + "'" + ", mail='" + getMail() + "'" + ", password='" + getPassword()
-				+ "'" + ", birthday='" + getBirthday() + "'" + ", profile_image='" + getProfileImage() + "'" + ", token='" + getToken() + "'" + "}";
+		return "User{" +
+				"id=" + id +
+				", username='" + username + '\'' +
+				", name='" + name + '\'' +
+				", lastName='" + lastName + '\'' +
+				", mail='" + mail + '\'' +
+				", password='" + password + '\'' +
+				", birthday=" + birthday +
+				", profileImage=" + profileImage +
+				", token='" + token + '\'' +
+				'}';
 	}
 }

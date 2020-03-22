@@ -1,4 +1,4 @@
-package com.proyecto.thegiftcher.web;
+package com.proyecto.thegiftcher.web.controller;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.proyecto.thegiftcher.config.JwtTokenUtil;
 import com.proyecto.thegiftcher.domain.User;
 import com.proyecto.thegiftcher.service.IUserService;
-import com.proyecto.thegiftcher.service.Impl.JwtUserDetailsServiceImpl;
+import com.proyecto.thegiftcher.service.impl.JwtUserDetailsServiceImpl;
 
 @RestController
 @CrossOrigin
@@ -33,7 +33,7 @@ public class AuthController {
 	private JwtUserDetailsServiceImpl jwtUserDetailsServiceImpl;
 	@Autowired
 	private IUserService userService;
-	 
+
 
 	@PostMapping(value = "/login")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody User authenticationRequest) throws Exception {
@@ -45,7 +45,7 @@ public class AuthController {
 		final String token = jwtTokenUtil.generateToken(userDetails);
 		user.setToken(token);
 		
-		return ResponseEntity.ok(new User(user.getId(), user.getName(), user.getLastName(), user.getUsername(), user.getMail(), user.getBirthday(), user.getProfileImage(), user.getToken()));
+		return ResponseEntity.ok(user);
 	}
 	
 	private void authenticate(String username, String password) throws Exception {

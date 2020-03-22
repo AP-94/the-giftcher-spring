@@ -1,4 +1,4 @@
-package com.proyecto.thegiftcher.web;
+package com.proyecto.thegiftcher.web.controller;
 
 import java.util.List;
 

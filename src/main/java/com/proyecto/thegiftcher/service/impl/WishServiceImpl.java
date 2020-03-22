@@ -1,4 +1,4 @@
-package com.proyecto.thegiftcher.service.Impl;
+package com.proyecto.thegiftcher.service.impl;
 
 import java.util.List;
 import java.util.Optional;

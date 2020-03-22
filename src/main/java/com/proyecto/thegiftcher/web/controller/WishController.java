@@ -1,8 +1,7 @@
-package com.proyecto.thegiftcher.web;
+package com.proyecto.thegiftcher.web.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
@@ -42,8 +41,9 @@ public class WishController {
 	}
 	
 	@PostMapping(path = "/")
-	public void addwish(@RequestBody Wish wish, HttpServletRequest request) {
+	public ResponseEntity addwish(@RequestBody Wish wish, HttpServletRequest request) {
 		wishService.create(wish, request);
+		return new ResponseEntity("New wish added successfully", HttpStatus.OK);
 	}
 
 	@PostMapping(path = "/copy/userId/{userId}/id/{id}")
@@ -52,13 +52,15 @@ public class WishController {
 	}
 	
 	@PutMapping(path = "/{id}")
-	public void update(@RequestBody Wish wish, @PathVariable long id, HttpServletRequest request) {
+	public ResponseEntity update(@RequestBody Wish wish, @PathVariable long id, HttpServletRequest request) {
 		wishService.modify(wish, id, request);
+		return new ResponseEntity("Wish with name " + wish.getName() + " modifyed", HttpStatus.OK);
 	}
 
 	@DeleteMapping(path = "/{id}")
-	public void delete(@PathVariable long id, HttpServletRequest request) {
+	public ResponseEntity delete(@PathVariable long id, HttpServletRequest request) {
 		wishService.delete(id, request);
+		return new ResponseEntity("Wish with id: " + id + " deleted", HttpStatus.OK);
 	}
    
 }

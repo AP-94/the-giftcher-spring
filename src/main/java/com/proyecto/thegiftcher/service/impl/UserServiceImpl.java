@@ -1,10 +1,9 @@
-package com.proyecto.thegiftcher.service.Impl;
+package com.proyecto.thegiftcher.service.impl;
 
 import java.util.List;
 
 import com.proyecto.thegiftcher.config.JwtTokenUtil;
 import com.proyecto.thegiftcher.service.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proyecto.thegiftcher.domain.User;
