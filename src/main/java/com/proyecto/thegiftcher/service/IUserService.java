@@ -1,5 +1,6 @@
 package com.proyecto.thegiftcher.service;
 
+import java.io.File;
 import java.util.List;
 
 import com.proyecto.thegiftcher.domain.User;
@@ -16,5 +17,6 @@ public interface IUserService {
 	void put(User user, long id);
 	void updateUser(User user);
 	void delete(long id);
+	public Boolean deleteFile(String file);
 
 }

@@ -33,6 +33,10 @@ public class User implements Serializable {
 	@NotNull
 	private Timestamp birthday;
 
+	private String imageName;
+	
+	private String imagePath;
+	
 	@Lob
 	private Byte profileImage;
 
@@ -50,6 +54,22 @@ public class User implements Serializable {
 		this.profileImage = profileImage;
 	}
 	
+	public String getImageName() {
+		return imageName;
+	}
+
+	public void setImageName(String imageName) {
+		this.imageName = imageName;
+	}
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
+
 	public User(Long id, String username, String name, String lastName, String mail,Timestamp birthday, Byte profileImage, String token) {
 		super();
 		this.id = id;
@@ -172,6 +192,8 @@ public class User implements Serializable {
 				", password='" + password + '\'' +
 				", birthday=" + birthday +
 				", profileImage=" + profileImage +
+				", imageName=" + imageName +
+				", imagePath" + imagePath +
 				", token='" + token + '\'' +
 				'}';
 	}

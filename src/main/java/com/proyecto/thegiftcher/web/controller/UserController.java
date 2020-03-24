@@ -5,22 +5,34 @@ import com.proyecto.thegiftcher.repository.UserRepository;
 import com.proyecto.thegiftcher.service.IUserService;
 import com.proyecto.thegiftcher.web.error.CustomError;
 import com.proyecto.thegiftcher.web.error.UnauthorizedError;
+
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.ValidationException;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import java.util.zip.Deflater;
 
 @RestController
 public class UserController {
 
 	private final IUserService userService;
 	private final UserRepository userRepository;
+	public static String profileImagesDirectory = System.getProperty("user.dir") + "/profileImages";
 
 	public UserController(IUserService userService, UserRepository userRepository) {
 		this.userRepository = userRepository;
@@ -36,6 +48,7 @@ public class UserController {
 	public User getOne(@PathVariable(value = "id") long id) {
 		return userService.get(id);
 	}
+	
 
 	@PostMapping("/register")
 	public Boolean create(@RequestBody User user) throws NoSuchAlgorithmException {
@@ -51,7 +64,54 @@ public class UserController {
 		String encodedPassword = new BCryptPasswordEncoder().encode(password);
 		Timestamp birthday = user.getBirthday();
 		Byte profileImage = user.getProfileImage();
+		
+		
 		userRepository.save(new User(username, name, lastName, mail, encodedPassword, birthday, profileImage));
+		return true;
+	}
+	
+	@PutMapping("/profile_image/{id}")
+	public Boolean setImage(@PathVariable(value = "id") long id, @RequestParam("file") MultipartFile file) throws Exception {
+		
+		String imageName = file.getOriginalFilename();
+		String imagePath = Paths.get(profileImagesDirectory, imageName).toString();
+		
+		Optional<User> currentUser = userRepository.findById(id);
+		
+		if(!currentUser.isPresent()){
+			throw new Exception("User not found");
+		} 
+		
+		//Save the file locally
+		FileOutputStream stream = null;
+		try {
+			stream = new FileOutputStream(imagePath);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			stream.write(file.getBytes());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			stream.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		User userToUpdate = currentUser.get();
+		
+		if (!userToUpdate.getImagePath().isEmpty()) {
+			userService.deleteFile(userToUpdate.getImageName());
+		}
+		
+		userToUpdate.setImageName(imageName);
+		userToUpdate.setImagePath(imagePath);
+		userRepository.save(userToUpdate);
 		return true;
 	}
 	
