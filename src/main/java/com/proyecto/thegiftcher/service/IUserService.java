@@ -1,6 +1,5 @@
 package com.proyecto.thegiftcher.service;
 
-import java.io.File;
 import java.util.List;
 
 import com.proyecto.thegiftcher.domain.User;

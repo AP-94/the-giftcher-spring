@@ -15,17 +15,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.ValidationException;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.zip.Deflater;
 
 @RestController
 public class UserController {
@@ -62,21 +59,26 @@ public class UserController {
 		String mail = user.getMail();
 		String password = user.getPassword();
 		String encodedPassword = new BCryptPasswordEncoder().encode(password);
-		Timestamp birthday = user.getBirthday();
-		Byte profileImage = user.getProfileImage();
+		Date birthday = user.getBirthday();
 		
-		
-		userRepository.save(new User(username, name, lastName, mail, encodedPassword, birthday, profileImage));
+		userRepository.save(new User(username, name, lastName, mail, encodedPassword, birthday));
 		return true;
 	}
 	
 	@PutMapping("/profile_image/{id}")
 	public Boolean setImage(@PathVariable(value = "id") long id, @RequestParam("file") MultipartFile file) throws Exception {
 		
-		String imageName = file.getOriginalFilename();
+		String imageOriginalName = file.getOriginalFilename();
+		String imageExtension = imageOriginalName.substring(imageOriginalName.lastIndexOf(".") + 1);
+		String imageName = "profile_picture_" + id + "." + imageExtension;
 		String imagePath = Paths.get(profileImagesDirectory, imageName).toString();
+		long size = file.getSize();
 		
 		Optional<User> currentUser = userRepository.findById(id);
+		
+		if (size > 5000000) {
+			throw new Exception("The size of the image is to big");
+		}
 		
 		if(!currentUser.isPresent()){
 			throw new Exception("User not found");
@@ -87,19 +89,16 @@ public class UserController {
 		try {
 			stream = new FileOutputStream(imagePath);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
 			stream.write(file.getBytes());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
 			stream.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -175,27 +174,6 @@ public class UserController {
 		return new ResponseEntity("User password updated", HttpStatus.OK);
 		
 	}
-	
-	/*@SuppressWarnings({ "rawtypes", "unchecked" })
-	@PostMapping(path = "/user/update_image")
-	public ResponseEntity updateProfileImage(@RequestBody User user) throws Exception {
-		
-		Long id = user.getId();
-		
-		
-		Optional<User> currentUser = userRepository.findById(id);
-		
-		if (currentUser == null) {
-			throw new Exception("User not found");
-		} 
-		
-		User userToUpdate = currentUser.get();
-		userToUpdate.setProfileImage(profileImage);
-		userRepository.save(userToUpdate);
-		
-		return new ResponseEntity("User profile image updated", HttpStatus.OK);
-		
-	}*/
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@DeleteMapping(path = "/user/{id}")

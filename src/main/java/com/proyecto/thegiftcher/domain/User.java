@@ -3,8 +3,9 @@ package com.proyecto.thegiftcher.domain;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.sql.Date;
 
 @Entity
 @Table(name = "usertg")
@@ -31,19 +32,16 @@ public class User implements Serializable {
 	private String password;
 
 	@NotNull
-	private Timestamp birthday;
+	private Date birthday;
 
 	private String imageName;
 	
 	private String imagePath;
-	
-	@Lob
-	private Byte profileImage;
 
 	private String token;
 
 	public User(@NotEmpty String username, @NotEmpty String name, String lastName, @NotEmpty String mail,
-			@NotEmpty String password, @NotNull Timestamp birthday, Byte profileImage) {
+			@NotEmpty String password, @NotNull Date birthday) {
 		super();
 		this.username = username;
 		this.name = name;
@@ -51,7 +49,6 @@ public class User implements Serializable {
 		this.mail = mail;
 		this.password = password;
 		this.birthday = birthday;
-		this.profileImage = profileImage;
 	}
 	
 	public String getImageName() {
@@ -70,7 +67,7 @@ public class User implements Serializable {
 		this.imagePath = imagePath;
 	}
 
-	public User(Long id, String username, String name, String lastName, String mail,Timestamp birthday, Byte profileImage, String token) {
+	public User(Long id, String username, String name, String lastName, String mail, Date birthday, String token) {
 		super();
 		this.id = id;
 		this.username = username;
@@ -78,7 +75,6 @@ public class User implements Serializable {
 		this.lastName = lastName;
 		this.mail = mail;
 		this.birthday = birthday;
-		this.profileImage = profileImage;
 		this.token = token;
 	}
 	
@@ -149,22 +145,14 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
-	public Timestamp getBirthday() {
+	public Date getBirthday() {
 		return birthday;
 	}
 
-	public void setBirthday(Timestamp birthday) {
+	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
 	}
-
-	public Byte getProfileImage() {
-		return profileImage;
-	}
-
-	public void setProfileImage(Byte profileImage) {
-		this.profileImage = profileImage;
-	}
-
+	
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -191,7 +179,6 @@ public class User implements Serializable {
 				", mail='" + mail + '\'' +
 				", password='" + password + '\'' +
 				", birthday=" + birthday +
-				", profileImage=" + profileImage +
 				", imageName=" + imageName +
 				", imagePath" + imagePath +
 				", token='" + token + '\'' +

@@ -1,6 +1,7 @@
 package com.proyecto.thegiftcher.service.impl;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.List;
 
 import com.proyecto.thegiftcher.config.JwtTokenUtil;
@@ -81,7 +82,8 @@ public class UserServiceImpl implements IUserService {
 		boolean status = false;
 		try {
 			if (file != null) {
-				File fileToDelete = new File(file);
+				String path = Paths.get(profileImagesDirectory, file).toString();
+				File fileToDelete = new File(path);
 				status = fileToDelete.delete();
 				return status;
 			}
