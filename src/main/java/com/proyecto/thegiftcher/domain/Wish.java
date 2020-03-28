@@ -21,7 +21,6 @@ public class Wish implements Serializable {
 
     @NotNull
     private Long userId;
-
     
     @Size(min = 3, max = 100)
     @NotEmpty
@@ -38,11 +37,10 @@ public class Wish implements Serializable {
 
     @NotNull
     private int categoryId;
+    
+    private String[] images_names;
 
-    @Lob
-    private byte[] image;
-
-    private String imageContentType;
+	private String[] images_paths;
 
     private Boolean reserved;
 
@@ -145,33 +143,33 @@ public class Wish implements Serializable {
     public void setCategory(int categoryId) {
         this.categoryId = categoryId;
     }
+    
+    public String[] getImagesNames() {
+		return images_names;
+	}
 
-    public byte[] getImage() {
-        return image;
+	public void setImagesNames(String[] imagesNames) {
+		this.images_names = imagesNames;
+	}
+	
+	 public Wish imagesNames(String[] image) {
+	        this.images_paths = image;
+	        return this;
+	    }
+
+    public String[] getImagesPaths() {
+        return images_paths;
     }
 
-    public Wish image(byte[] image) {
-        this.image = image;
+    public Wish imagesPaths(String[] image) {
+        this.images_paths = image;
         return this;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setImagesPaths(String[] image) {
+        this.images_paths = image;
     }
-
-    public String getImageContentType() {
-        return imageContentType;
-    }
-
-    public Wish imageContentType(String imageContentType) {
-        this.imageContentType = imageContentType;
-        return this;
-    }
-
-    public void setImageContentType(String imageContentType) {
-        this.imageContentType = imageContentType;
-    }
-
+    
     public Boolean isReserved() {
         return reserved;
     }
@@ -237,8 +235,8 @@ public class Wish implements Serializable {
             ", shop='" + getShop() + "'" +
             ", online_shop='" + getOnlineShop() + "'" +
             ", categoryId='" + getCategory() + "'" +
-            ", image='" + getImage() + "'" +
-            ", imageContentType='" + getImageContentType() + "'" +
+            ", productImages='" + getImagesPaths() + "'" +
+            ", imagesNames='" + getImagesNames() + "'" +
             ", reserved='" + isReserved() + "'" +
             ", location='" + getLocation() + "'" +
             ", date='" + getDate() + "'" +

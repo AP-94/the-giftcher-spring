@@ -66,25 +66,20 @@ public class UserController {
 	}
 	
 	@PutMapping("/profile_image/{id}")
-	public Boolean setImage(@PathVariable(value = "id") long id, @RequestParam("file") MultipartFile file) throws Exception {
+	public Boolean setImage(@PathVariable(value = "id") long id, @RequestParam("file") MultipartFile file)
+			throws Exception {
 		
 		String imageOriginalName = file.getOriginalFilename();
 		String imageExtension = imageOriginalName.substring(imageOriginalName.lastIndexOf(".") + 1);
 		String imageName = "profile_picture_" + id + "." + imageExtension;
 		String imagePath = Paths.get(profileImagesDirectory, imageName).toString();
 		long size = file.getSize();
-		
-		Optional<User> currentUser = userRepository.findById(id);
-		
+
 		if (size > 5000000) {
 			throw new Exception("The size of the image is to big");
 		}
 		
-		if(!currentUser.isPresent()){
-			throw new Exception("User not found");
-		} 
-		
-		//Save the file locally
+		// Save the file locally
 		FileOutputStream stream = null;
 		try {
 			stream = new FileOutputStream(imagePath);
@@ -102,11 +97,13 @@ public class UserController {
 			e.printStackTrace();
 		}
 		
-		User userToUpdate = currentUser.get();
+		Optional<User> currentUser = userRepository.findById(id);
 		
-		if (!userToUpdate.getImagePath().isEmpty()) {
-			userService.deleteFile(userToUpdate.getImageName());
+		if (!currentUser.isPresent()) {
+			throw new Exception("User not found");
 		}
+		
+		User userToUpdate = currentUser.get();
 		
 		userToUpdate.setImageName(imageName);
 		userToUpdate.setImagePath(imagePath);

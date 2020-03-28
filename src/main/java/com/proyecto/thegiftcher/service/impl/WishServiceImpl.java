@@ -65,13 +65,14 @@ public class WishServiceImpl implements IWishService {
 			newWish.setCategory(wish.getCategory());
 			newWish.setDate(wish.getDate());
 			newWish.setDescription(wish.getDescription());
-			newWish.setImage(wish.getImage());
-			newWish.setImageContentType(wish.getImageContentType());
+			newWish.setImagesPaths(wish.getImagesPaths());
+			newWish.setImagesNames(wish.getImagesNames());
 			newWish.setLocation(wish.getLocation());
 			newWish.setOnline_shop(wish.getOnlineShop());
 			newWish.setReserved(wish.isReserved());
 			newWish.setPrice(wish.getPrice());
 			newWish.setShop(wish.getShop());
+			newWish.setImagesNames(wish.getImagesNames());
 
 			//insertar
 			wishRepository.save(newWish);
@@ -90,9 +91,10 @@ public class WishServiceImpl implements IWishService {
 			x.setLocation(wish.getLocation());
 			x.setOnline_shop(wish.getOnlineShop());
 			x.setShop(wish.getShop());
-			x.setImageContentType(wish.getImageContentType());
-			x.setImage(wish.getImage());
+			x.setImagesPaths(wish.getImagesPaths());
+			x.setImagesNames(wish.getImagesNames());
 			x.setReserved(wish.isReserved());
+			x.setImagesNames(wish.getImagesNames());
 			wishRepository.save(x);
 		});
 		

@@ -1,7 +1,5 @@
 package com.proyecto.thegiftcher.service.impl;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.List;
 
 import com.proyecto.thegiftcher.config.JwtTokenUtil;
@@ -18,7 +16,6 @@ public class UserServiceImpl implements IUserService {
 
 	private final UserRepository userRepository;
 	private final JwtTokenUtil jwtTokenUtil;
-	public static String profileImagesDirectory = System.getProperty("user.dir") + "/profileImages";
 
 	public UserServiceImpl(UserRepository userRepository, JwtTokenUtil jwtTokenUtil) {
 		this.userRepository = userRepository;
@@ -75,23 +72,5 @@ public class UserServiceImpl implements IUserService {
 		String jwtToken = requestTokenHeader.substring(7);
 		String username = jwtTokenUtil.getUsernameFromToken(jwtToken);
 		return userRepository.findByUsername(username);
-	}
-	
-	@Override
-	public Boolean deleteFile(String file) {
-		boolean status = false;
-		try {
-			if (file != null) {
-				String path = Paths.get(profileImagesDirectory, file).toString();
-				File fileToDelete = new File(path);
-				status = fileToDelete.delete();
-				return status;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return status;
-			
-		}
-		return status;
 	}
 }

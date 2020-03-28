@@ -16,6 +16,5 @@ public interface IUserService {
 	void put(User user, long id);
 	void updateUser(User user);
 	void delete(long id);
-	public Boolean deleteFile(String file);
 
 }
