@@ -35,7 +35,7 @@ public class AuthController {
 	private IUserService userService;
 
 
-	@PostMapping(value = "/login")
+	@PostMapping(value = "/user/login")
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody User authenticationRequest) throws Exception {
 		LOGGER.log(Level.INFO,
 				"******** " + authenticationRequest.getUsername() + " " + authenticationRequest.getPassword());
