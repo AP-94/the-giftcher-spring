@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
 
 import java.io.FileNotFoundException;
@@ -25,6 +26,9 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping(
+		value = "/user"
+)
 public class UserController {
 
 	private final IUserService userService;
@@ -36,12 +40,12 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	@GetMapping(path = "/users")
+	@GetMapping(path = "/get_users")
 	public List<User> getUsers() {
 		return userService.getAll();
 	}
 
-	@GetMapping(path = "/user/{id}")
+	@GetMapping(path = "/{id}")
 	public User getOne(@PathVariable(value = "id") long id) {
 		return userService.get(id);
 	}
@@ -65,13 +69,13 @@ public class UserController {
 		return true;
 	}
 	
-	@PutMapping("/profile_image/{id}")
-	public Boolean setImage(@PathVariable(value = "id") long id, @RequestParam("file") MultipartFile file)
+	@PutMapping("/profile_image")
+	public Boolean setImage(@RequestParam("file") MultipartFile file, HttpServletRequest request)
 			throws Exception {
-		
+		User user = userService.getUserLogged(request);
 		String imageOriginalName = file.getOriginalFilename();
 		String imageExtension = imageOriginalName.substring(imageOriginalName.lastIndexOf(".") + 1);
-		String imageName = "profile_picture_" + id + "." + imageExtension;
+		String imageName = "profile_picture_" + user.getId() + "." + imageExtension;
 		String imagePath = Paths.get(profileImagesDirectory, imageName).toString();
 		long size = file.getSize();
 
@@ -97,7 +101,7 @@ public class UserController {
 			e.printStackTrace();
 		}
 		
-		Optional<User> currentUser = userRepository.findById(id);
+		Optional<User> currentUser = userRepository.findById(user.getId());
 		
 		if (!currentUser.isPresent()) {
 			throw new Exception("User not found");
@@ -112,7 +116,7 @@ public class UserController {
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@PutMapping(path = "/user/update_user")
+	@PutMapping(path = "/update")
 	public ResponseEntity updateUser(@RequestBody User user) throws Exception {
 		
 		Long id = user.getId();
@@ -146,7 +150,7 @@ public class UserController {
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@PutMapping(path = "/user/update_password")
+	@PutMapping(path = "/update_password")
 	public ResponseEntity updateUserPassword(@RequestBody User user, String oldPassword) throws Exception {
 		
 		Long id = user.getId();
@@ -173,10 +177,12 @@ public class UserController {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@DeleteMapping(path = "/user/{id}")
-	public ResponseEntity delete(@PathVariable long id) throws Exception {
+	@DeleteMapping(path = "/delete_user")
+	public ResponseEntity delete(HttpServletRequest request) throws Exception {
 		
-		Optional<User> currentUser = userRepository.findById(id);
+		User user = userService.getUserLogged(request);
+		
+		Optional<User> currentUser = userRepository.findById(user.getId());
 		
 		if (!currentUser.isPresent()) {
 			throw new Exception("User not found");

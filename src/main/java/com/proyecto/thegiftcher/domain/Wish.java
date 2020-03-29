@@ -38,9 +38,9 @@ public class Wish implements Serializable {
     @NotNull
     private Long categoryId;
     
-    private String[] images_names;
+    private String images_names;
 
-	private String[] images_paths;
+	private String images_paths;
 
     private Boolean reserved;
 
@@ -144,29 +144,29 @@ public class Wish implements Serializable {
         this.categoryId = categoryId;
     }
     
-    public String[] getImagesNames() {
+    public String getImagesNames() {
 		return images_names;
 	}
 
-	public void setImagesNames(String[] imagesNames) {
+	public void setImagesNames(String imagesNames) {
 		this.images_names = imagesNames;
 	}
 	
-	 public Wish imagesNames(String[] image) {
+	 public Wish imagesNames(String image) {
 	        this.images_paths = image;
 	        return this;
 	    }
 
-    public String[] getImagesPaths() {
+    public String getImagesPaths() {
         return images_paths;
     }
 
-    public Wish imagesPaths(String[] image) {
+    public Wish imagesPaths(String image) {
         this.images_paths = image;
         return this;
     }
 
-    public void setImagesPaths(String[] image) {
+    public void setImagesPaths(String image) {
         this.images_paths = image;
     }
     

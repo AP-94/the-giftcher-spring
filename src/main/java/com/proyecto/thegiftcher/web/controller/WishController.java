@@ -1,11 +1,11 @@
 package com.proyecto.thegiftcher.web.controller;
 
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.proyecto.thegiftcher.domain.Wish;
 import com.proyecto.thegiftcher.service.IWishService;
@@ -47,6 +47,7 @@ public class WishController {
 		return new ResponseEntity<>(wish, HttpStatus.OK);
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@PostMapping(path = "/")
 	public ResponseEntity addwish(@RequestBody Wish wish, HttpServletRequest request) {
 		wishService.create(wish, request);
@@ -58,16 +59,27 @@ public class WishController {
 		wishService.copyWishFromUser(userId, id, request);
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@PutMapping(path = "/{id}")
 	public ResponseEntity update(@RequestBody Wish wish, @PathVariable long id, HttpServletRequest request) {
 		wishService.modify(wish, id, request);
 		return new ResponseEntity("Wish with name " + wish.getName() + " modifyed", HttpStatus.OK);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@DeleteMapping(path = "/{id}")
 	public ResponseEntity delete(@PathVariable long id, HttpServletRequest request) {
 		wishService.delete(id, request);
 		return new ResponseEntity("Wish with id: " + id + " deleted", HttpStatus.OK);
+	}
+	
+	@PutMapping("/wish_images/{id}")
+	public Boolean setImage(@PathVariable(value = "id") long id,
+			@RequestParam("file") MultipartFile file, HttpServletRequest request)
+			throws Exception {
+		
+		wishService.addImages(id, file, request);
+		return true;
 	}
    
 }
