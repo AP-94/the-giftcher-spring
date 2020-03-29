@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 @Table(name = "wish")
 public class Wish implements Serializable {
 
-	private static final long serialVersionUID = 1205558563863494858L;
+	private static final long serialVersionUID = -5224805761451277006L;
 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +36,7 @@ public class Wish implements Serializable {
     private String online_shop;
 
     @NotNull
-    private int categoryId;
+    private Long categoryId;
     
     private String[] images_names;
 
@@ -131,16 +131,16 @@ public class Wish implements Serializable {
         this.online_shop = online_shop;
     }
 
-    public int getCategory() {
+    public Long getCategory() {
         return categoryId;
     }
 
-    public Wish category(int categoryId) {
+    public Wish categoryId(Long categoryId) {
         this.categoryId = categoryId;
         return this;
     }
 
-    public void setCategory(int categoryId) {
+    public void setCategory(Long categoryId) {
         this.categoryId = categoryId;
     }
     

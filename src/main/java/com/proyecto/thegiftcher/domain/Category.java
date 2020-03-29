@@ -16,12 +16,12 @@ public class Category implements Serializable {
 
 	@NotNull
 	@Size(min = 3, max = 50)
-	@Column(name = "category_name", length = 50, nullable = false)
 	private String categoryName;
 
-//    @OneToMany(mappedBy = "categoryid")
-//    @JsonIgnore
-//    private Set<Wish> wishes = new HashSet<>();
+	public Category(String categoryName) {
+		super();
+		this.categoryName = categoryName;
+	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
@@ -39,39 +39,9 @@ public class Category implements Serializable {
 		return categoryName;
 	}
 
-	public Category categoryName(String categoryName) {
-		this.categoryName = categoryName;
-		return this;
-	}
-
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
 	}
-
-//    public Set<Wish> getWishes() {
-//        return wishes;
-//    }
-//
-//    public Category wishes(Set<Wish> wishes) {
-//        this.wishes = wishes;
-//        return this;
-//    }
-
-//    public Category addWish(Wish wish) {
-//        this.wishes.add(wish);
-//        wish.setCategory(this);
-//        return this;
-//    }
-//
-//    public Category removeWish(Wish wish) {
-//        this.wishes.remove(wish);
-//        wish.setCategory(null);
-//        return this;
-//    }
-
-//    public void setWishes(Set<Wish> wishes) {
-//        this.wishes = wishes;
-//    }
 
 	@Override
 	public boolean equals(Object o) {
@@ -94,7 +64,7 @@ public class Category implements Serializable {
 		return "Category{" + "id=" + getId() + ", categoryName='" + getCategoryName() + "'" + "}";
 	}
 
-	private String getCategoryName() {
+	public String getCategoryName() {
 		// TODO Auto-generated method stub
 		return null;
 	}

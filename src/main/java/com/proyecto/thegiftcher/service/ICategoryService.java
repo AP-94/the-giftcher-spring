@@ -9,4 +9,9 @@ public interface ICategoryService {
 	Category get(long id);
 	List<Category> getAll();
 
+	Category getWishByCategoryId(long id) throws Exception;
+
+	void post(Category category);
+	void put(Category category, long id);
+	void delete(long id);
 }

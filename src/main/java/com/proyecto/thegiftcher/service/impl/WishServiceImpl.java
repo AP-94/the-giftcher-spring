@@ -44,6 +44,11 @@ public class WishServiceImpl implements IWishService {
 	}
 
 	@Override
+	public List<Wish> getWishByCategoryId(long categoryId){
+		return (List<Wish>) wishRepository.findWishesByCategoryId(categoryId);
+	}
+
+	@Override
 	public void create(Wish wish, HttpServletRequest request) {
 		User user = userService.getUserLogged(request);
 		wish.setUserId(user.getId());

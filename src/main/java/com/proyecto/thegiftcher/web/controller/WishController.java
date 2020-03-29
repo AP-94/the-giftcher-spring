@@ -39,6 +39,13 @@ public class WishController {
 
 		return new ResponseEntity<>(wish, HttpStatus.OK);
 	}
+
+	@GetMapping(path = "/categories/{categoryId}")
+	public ResponseEntity<List<Wish>> getWishByCategory(@PathVariable long categoryId) throws Exception {
+		List<Wish> wish = wishService.getWishByCategoryId(categoryId);
+
+		return new ResponseEntity<>(wish, HttpStatus.OK);
+	}
 	
 	@PostMapping(path = "/")
 	public ResponseEntity addwish(@RequestBody Wish wish, HttpServletRequest request) {
