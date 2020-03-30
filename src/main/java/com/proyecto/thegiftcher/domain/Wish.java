@@ -38,9 +38,9 @@ public class Wish implements Serializable {
     @NotNull
     private Long categoryId;
     
-    private String images_names;
+    private String image_name;
 
-	private String images_paths;
+	private String image_path;
 
     private Boolean reserved;
 
@@ -144,30 +144,30 @@ public class Wish implements Serializable {
         this.categoryId = categoryId;
     }
     
-    public String getImagesNames() {
-		return images_names;
+    public String getImageName() {
+		return image_name;
 	}
 
-	public void setImagesNames(String imagesNames) {
-		this.images_names = imagesNames;
+	public void setImageName(String imageName) {
+		this.image_name = imageName;
 	}
 	
-	 public Wish imagesNames(String image) {
-	        this.images_paths = image;
+	 public Wish imagsName(String image) {
+	        this.image_path = image;
 	        return this;
 	    }
 
-    public String getImagesPaths() {
-        return images_paths;
+    public String getImagePath() {
+        return image_path;
     }
 
-    public Wish imagesPaths(String image) {
-        this.images_paths = image;
+    public Wish imagePath(String image) {
+        this.image_path = image;
         return this;
     }
 
-    public void setImagesPaths(String image) {
-        this.images_paths = image;
+    public void setImagePath(String image) {
+        this.image_path = image;
     }
     
     public Boolean isReserved() {
@@ -235,8 +235,8 @@ public class Wish implements Serializable {
             ", shop='" + getShop() + "'" +
             ", online_shop='" + getOnlineShop() + "'" +
             ", categoryId='" + getCategory() + "'" +
-            ", productImages='" + getImagesPaths() + "'" +
-            ", imagesNames='" + getImagesNames() + "'" +
+            ", productImages='" + getImagePath() + "'" +
+            ", imagesNames='" + getImageName() + "'" +
             ", reserved='" + isReserved() + "'" +
             ", location='" + getLocation() + "'" +
             ", date='" + getDate() + "'" +

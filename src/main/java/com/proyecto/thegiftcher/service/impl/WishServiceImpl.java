@@ -76,14 +76,14 @@ public class WishServiceImpl implements IWishService {
 			newWish.setCategory(wish.getCategory());
 			newWish.setDate(wish.getDate());
 			newWish.setDescription(wish.getDescription());
-			newWish.setImagesPaths(wish.getImagesPaths());
-			newWish.setImagesNames(wish.getImagesNames());
+			newWish.setImagePath(wish.getImagePath());
+			newWish.setImageName(wish.getImageName());
 			newWish.setLocation(wish.getLocation());
 			newWish.setOnline_shop(wish.getOnlineShop());
 			newWish.setReserved(wish.isReserved());
 			newWish.setPrice(wish.getPrice());
 			newWish.setShop(wish.getShop());
-			newWish.setImagesNames(wish.getImagesNames());
+			newWish.setImageName(wish.getImageName());
 
 			//insertar
 			wishRepository.save(newWish);
@@ -102,10 +102,10 @@ public class WishServiceImpl implements IWishService {
 			x.setLocation(wish.getLocation());
 			x.setOnline_shop(wish.getOnlineShop());
 			x.setShop(wish.getShop());
-			x.setImagesPaths(wish.getImagesPaths());
-			x.setImagesNames(wish.getImagesNames());
+			x.setImagePath(wish.getImagePath());
+			x.setImageName(wish.getImageName());
 			x.setReserved(wish.isReserved());
-			x.setImagesNames(wish.getImagesNames());
+			x.setImageName(wish.getImageName());
 			wishRepository.save(x);
 		});
 		
@@ -157,8 +157,8 @@ public class WishServiceImpl implements IWishService {
 		Wish wishToUpdate = currentWish.get();
 		
 
-//		wishToUpdate.setImagesNames(wishImagesNames);
-//		wishToUpdate.setImagesPaths(wishImagesPath);
+		wishToUpdate.setImageName(imageName);
+		wishToUpdate.setImagePath(imagePath);
 		wishRepository.save(wishToUpdate);
 	}
 

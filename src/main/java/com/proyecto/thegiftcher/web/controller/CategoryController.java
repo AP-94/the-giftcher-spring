@@ -1,12 +1,10 @@
 package com.proyecto.thegiftcher.web.controller;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 
 import com.proyecto.thegiftcher.repository.CategoryRepository;
 import com.proyecto.thegiftcher.web.error.CustomError;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,6 +48,7 @@ public class CategoryController {
 		return true;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@PutMapping(path = "/categories/{id}")
 	public ResponseEntity updateCategory(@RequestBody Category category) throws Exception {
 
@@ -79,6 +78,7 @@ public class CategoryController {
 
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@DeleteMapping(path = "/categoriee/{id}")
 	public ResponseEntity delete(@PathVariable long id) throws Exception {
 
