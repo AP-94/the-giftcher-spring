@@ -1,5 +1,6 @@
 package com.proyecto.thegiftcher.web.controller;
 
+import com.proyecto.thegiftcher.domain.Password;
 import com.proyecto.thegiftcher.domain.User;
 import com.proyecto.thegiftcher.repository.UserRepository;
 import com.proyecto.thegiftcher.service.IUserService;
@@ -115,9 +116,11 @@ public class UserController {
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@PutMapping(path = "/update")
-	public ResponseEntity updateUser(@RequestBody User user) throws Exception {
+	public ResponseEntity updateUser(@RequestBody User user, HttpServletRequest request) throws Exception {
 		
-		Long id = user.getId();
+		User userLogged = userService.getUserLogged(request);
+		
+		Long id = userLogged.getId();
 		String username = user.getUsername();
 		String name = user.getName();
 		String lastName = user.getLastName();
@@ -149,10 +152,12 @@ public class UserController {
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@PutMapping(path = "/update_password")
-	public ResponseEntity updateUserPassword(@RequestBody User user, String oldPassword) throws Exception {
+	public ResponseEntity updateUserPassword(@RequestBody Password password, HttpServletRequest request) throws Exception {
 		
+		User user = userService.getUserLogged(request);
 		Long id = user.getId();
-		String newPassword = user.getPassword();
+		String newPassword = password.getNewPassword();
+		String oldPassword = password.getOldPassword();
 		
 		Optional<User> currentUser = userRepository.findById(id);
 		
@@ -175,7 +180,7 @@ public class UserController {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@DeleteMapping(path = "/delete_user")
+	@DeleteMapping(path = "/delete_account")
 	public ResponseEntity delete(HttpServletRequest request) throws Exception {
 		
 		User user = userService.getUserLogged(request);
