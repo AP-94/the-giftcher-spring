@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FriendServiceImpl implements IFriendService {
@@ -74,6 +75,12 @@ public class FriendServiceImpl implements IFriendService {
 
 	@Override
 	public void deleteFriend(long id) {
-		friendRepository.deleteById(id);
+		final Friend friend = friendRepository.getOne(id);
+
+		Optional<Friend> userIdAndFriendId = friendRepository.findByUserIdAndFriendId(friend.getUserId(), friend.getFriendId());
+		userIdAndFriendId.ifPresent(value -> friendRepository.deleteById(value.getId()));
+
+		userIdAndFriendId = friendRepository.findByUserIdAndFriendId(friend.getFriendId(), friend.getUserId());
+		userIdAndFriendId.ifPresent(value -> friendRepository.deleteById(value.getId()));
 	}
 }
