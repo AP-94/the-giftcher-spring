@@ -3,6 +3,7 @@ package com.proyecto.thegiftcher.web.controller;
 import com.proyecto.thegiftcher.domain.Password;
 import com.proyecto.thegiftcher.domain.User;
 import com.proyecto.thegiftcher.repository.UserRepository;
+import com.proyecto.thegiftcher.service.IEmailService;
 import com.proyecto.thegiftcher.service.IUserService;
 import com.proyecto.thegiftcher.web.error.CustomError;
 import com.proyecto.thegiftcher.web.error.UnauthorizedError;
@@ -10,6 +11,7 @@ import com.proyecto.thegiftcher.web.error.UnauthorizedError;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +27,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -32,11 +35,13 @@ public class UserController {
 
 	private final IUserService userService;
 	private final UserRepository userRepository;
+	private final IEmailService emailService;
 	public static String profileImagesDirectory = System.getProperty("user.dir") + "/profileImages";
 
-	public UserController(IUserService userService, UserRepository userRepository) {
+	public UserController(IUserService userService, UserRepository userRepository, IEmailService emailService) {
 		this.userRepository = userRepository;
 		this.userService = userService;
+		this.emailService = emailService;
 	}
 
 	@GetMapping(path = "/get_users")
@@ -50,7 +55,7 @@ public class UserController {
 	}
 	
 
-	@PostMapping("/register")
+	@PostMapping(path = "/register")
 	public Boolean create(@RequestBody User user) throws NoSuchAlgorithmException {
 		String username = user.getUsername();
 		if (userRepository.existsByUsername(username)) {
@@ -68,7 +73,7 @@ public class UserController {
 		return true;
 	}
 	
-	@PutMapping("/profile_image")
+	@PutMapping(path = "/profile_image")
 	public Boolean setImage(@RequestParam("file") MultipartFile file, HttpServletRequest request)
 			throws Exception {
 		User user = userService.getUserLogged(request);
@@ -195,6 +200,33 @@ public class UserController {
 		userRepository.deleteById(userToDelete.getId());
 		
 		return new ResponseEntity("User with id: " + userToDelete.getId() + " deleted", HttpStatus.OK);
+		
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@PostMapping(path = "/reset_password")
+	public ResponseEntity resetPassword(@RequestParam String userMail) throws Exception {
+		
+		if (userRepository.findByMail(userMail) == null) {
+			throw new Exception("No user found with that Email");
+		}
+		
+		User user = userRepository.findByMail(userMail);
+		
+		String newPassword = UUID.randomUUID().toString();
+		String encodedPassword = new BCryptPasswordEncoder().encode(newPassword);
+		user.setPassword(encodedPassword);
+		userRepository.save(user);
+		
+		SimpleMailMessage passwordResetEmail = new SimpleMailMessage();
+		passwordResetEmail.setFrom("thegiftcher@gmail.com");
+		passwordResetEmail.setTo(user.getMail());
+		passwordResetEmail.setSubject("Password Reset Request");
+		passwordResetEmail.setText("Hi " + user.getName() + ",\nYou recently requested to reset your password for The Giftcher App account.\nYour new password is "
+		+ newPassword + "\nFor your account security we recommend you to change your password inmediatly after login. \n\nBest regards,\nThe Giftcher Team.");
+		emailService.sendEmail(passwordResetEmail);
+		
+		return new ResponseEntity("Mail successfully delivered to " + user.getMail(), HttpStatus.OK);
 		
 	}
 }

@@ -21,7 +21,7 @@ public class FriendController {
 	}
 
 	@GetMapping(path = "/friends")
-	public ResponseEntity<List<Friend>> getFriends(HttpServletRequest request){
+	public ResponseEntity<List<Friend>> getFriends(HttpServletRequest request) {
 		List<Friend> friends = friendService.getFriends(request);
 		if (CollectionUtils.isEmpty(friends)) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -30,7 +30,7 @@ public class FriendController {
 	}
 
 	@GetMapping(path = "/friends/requests")
-	public ResponseEntity<List<FriendRequest>> getRequestFriends(HttpServletRequest request){
+	public ResponseEntity<List<FriendRequest>> getRequestFriends(HttpServletRequest request) {
 		List<FriendRequest> friendRequests = friendService.getRequestFriends(request);
 		if (CollectionUtils.isEmpty(friendRequests)) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -57,6 +57,5 @@ public class FriendController {
 	public void deleteFriend(@PathVariable long id) {
 		friendService.deleteFriend(id);
 	}
-   
-}
 
+}

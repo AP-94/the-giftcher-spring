@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 public interface IUserService {
 	
 	User get(long id);
+	User findUserByMail(String email);
 	User getByUsername(String username);
 	User getUserLogged(HttpServletRequest request);
 	List<User> getAll();
