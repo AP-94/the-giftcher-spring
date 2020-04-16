@@ -9,7 +9,9 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class FriendController {
@@ -39,23 +41,31 @@ public class FriendController {
 	}
 
 	@PostMapping(path = "/friends")
-	public void createFriendRequest(@RequestBody FriendRequest friendRequest, HttpServletRequest request) {
+	public Map<String, String> createFriendRequest(@RequestBody FriendRequest friendRequest, HttpServletRequest request) {
 		friendService.createFriendRequest(friendRequest, request);
+
+		return Collections.singletonMap("message", "true");
 	}
 
 	@PutMapping(path = "/friends/{id}")
-	public void confirmFriendRequest(@PathVariable long id, HttpServletRequest request) {
+	public Map<String, String> confirmFriendRequest(@PathVariable long id, HttpServletRequest request) {
 		friendService.confirmFriendRequest(id, request);
+
+		return Collections.singletonMap("message", "true");
 	}
 
 	@DeleteMapping(path = "/friends/requests/{id}")
-	public void deleteFriendRequest(@PathVariable long id) {
+	public Map<String, String> deleteFriendRequest(@PathVariable long id) {
 		friendService.deleteFriendRequest(id);
+
+		return Collections.singletonMap("message", "true");
 	}
 
 	@DeleteMapping(path = "/friends/{id}")
-	public void deleteFriend(@PathVariable long id) {
+	public Map<String, String> deleteFriend(@PathVariable long id) {
 		friendService.deleteFriend(id);
+
+		return Collections.singletonMap("message", "true");
 	}
 
 }

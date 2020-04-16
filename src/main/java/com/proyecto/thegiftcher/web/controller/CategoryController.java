@@ -1,12 +1,12 @@
 package com.proyecto.thegiftcher.web.controller;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.proyecto.thegiftcher.repository.CategoryRepository;
 import com.proyecto.thegiftcher.web.error.CustomError;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.proyecto.thegiftcher.domain.Category;
@@ -36,7 +36,7 @@ public class CategoryController {
 	}
 
 	@PostMapping("/categories")
-	public Boolean create(@RequestBody Category category) throws ValidationException {
+	public Map<String, String> create(@RequestBody Category category) throws ValidationException {
 		String categoryName = category.getCategoryName();
 		if (categoryRepository.existsByCategoryName(categoryName)) {
 			throw new ValidationException("That category already exists");
@@ -45,12 +45,12 @@ public class CategoryController {
 		categoryName = category.getCategoryName();
 
 		categoryRepository.save(new Category(categoryName));
-		return true;
+		return Collections.singletonMap("message", "true");
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@PutMapping(path = "/categories/{id}")
-	public ResponseEntity updateCategory(@RequestBody Category category) throws Exception {
+	public Map<String, String> updateCategory(@RequestBody Category category) throws Exception {
 
 		Long id = category.getId();
 		String categoryName = category.getCategoryName();
@@ -74,13 +74,13 @@ public class CategoryController {
 		categoryToUpdate.setCategoryName(categoryName);
 		categoryRepository.save(categoryToUpdate);
 
-		return new ResponseEntity("Category updated", HttpStatus.OK);
+		return Collections.singletonMap("message", "Category updated");
 
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@DeleteMapping(path = "/categoriee/{id}")
-	public ResponseEntity delete(@PathVariable long id) throws Exception {
+	public Map<String, String> delete(@PathVariable long id) throws Exception {
 
 		Optional<Category> currentCategory = categoryRepository.findById(id);
 
@@ -91,7 +91,7 @@ public class CategoryController {
 		Category categoryToDelete = currentCategory.get();
 		categoryRepository.deleteById(categoryToDelete.getId());
 
-		return new ResponseEntity("Category with id: " + categoryToDelete.getId() + " deleted", HttpStatus.OK);
+		return Collections.singletonMap("message", "Category with id: " + categoryToDelete.getId() + " deleted");
 
 	}
 }
