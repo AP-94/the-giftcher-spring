@@ -1,32 +1,52 @@
 package com.proyecto.thegiftcher.service.impl;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
+import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 import com.proyecto.thegiftcher.config.JwtTokenUtil;
+import com.proyecto.thegiftcher.service.IEmailService;
 import com.proyecto.thegiftcher.service.IUserService;
-import org.springframework.stereotype.Service;
+import com.proyecto.thegiftcher.web.error.CustomError;
+import com.proyecto.thegiftcher.web.error.UnauthorizedError;
 
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.proyecto.thegiftcher.domain.Password;
 import com.proyecto.thegiftcher.domain.User;
 import com.proyecto.thegiftcher.repository.UserRepository;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ValidationException;
 
 @Service
 public class UserServiceImpl implements IUserService {
 
 	private final UserRepository userRepository;
 	private final JwtTokenUtil jwtTokenUtil;
+	private final IEmailService emailService;
+	public static String profileImagesDirectory = System.getProperty("user.dir") + "/profileImages";
 
-	public UserServiceImpl(UserRepository userRepository, JwtTokenUtil jwtTokenUtil) {
+	public UserServiceImpl(UserRepository userRepository, JwtTokenUtil jwtTokenUtil, IEmailService emailService) {
 		this.userRepository = userRepository;
 		this.jwtTokenUtil = jwtTokenUtil;
+		this.emailService = emailService;
 	}
 
 	@Override
 	public User get(long id) {
 		return userRepository.findById(id).get();
 	}
-	
+
 	@Override
 	public User findUserByMail(String email) {
 		return userRepository.findByMail(email);
@@ -40,7 +60,7 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public void post(User user) {
 		userRepository.save(user);
-		
+
 	}
 
 	@Override
@@ -49,9 +69,9 @@ public class UserServiceImpl implements IUserService {
 			user.setId(id);
 			userRepository.save(user);
 		});
-		
+
 	}
-	
+
 	@Override
 	public void updateUser(User user) {
 		if (userRepository.existsByUsername(user.getUsername())) {
@@ -59,11 +79,131 @@ public class UserServiceImpl implements IUserService {
 			userRepository.save(user);
 		}
 	}
+	
+	@Override
+	public void registerUser(User user) throws NoSuchAlgorithmException {
+		String username = user.getUsername();
+		String mail = user.getMail();
+		
+		if (userRepository.existsByUsername(username)) {
+			throw new ValidationException("That username is already taken");
+		}
+		if (userRepository.findByMail(mail) != null) {
+			throw new ValidationException("That email is already taken");
+		}
+		
+		String name = user.getName();
+		String lastName = user.getLastName();
+		String password = user.getPassword();
+		String encodedPassword = new BCryptPasswordEncoder().encode(password);
+		Date birthday = user.getBirthday();
+		
+		userRepository.save(new User(username, name, lastName, mail, encodedPassword, birthday));
+	}
+	
+	@Override
+	public void profileImage(MultipartFile file, long id) throws Exception {
+		String imageOriginalName = file.getOriginalFilename();
+		String imageExtension = imageOriginalName.substring(imageOriginalName.lastIndexOf(".") + 1);
+		String imageName = "profile_picture_" + id + "." + imageExtension;
+		String imagePath = Paths.get(profileImagesDirectory, imageName).toString();
+		long size = file.getSize();
+
+		if (size > 5000000) {
+			throw new Exception("The size of the image is to big");
+		}
+		
+		// Save the file locally
+		FileOutputStream stream = null;
+		try {
+			stream = new FileOutputStream(imagePath);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		try {
+			stream.write(file.getBytes());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			stream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		Optional<User> currentUser = userRepository.findById(id);
+		
+		if (!currentUser.isPresent()) {
+			throw new Exception("User not found");
+		}
+		
+		User userToUpdate = currentUser.get();
+		
+		userToUpdate.setImageName(imageName);
+		userToUpdate.setImagePath(imagePath);
+		userRepository.save(userToUpdate);
+	}
+	
+	@Override
+	public void updateUser(User user, long id) throws Exception {
+		String username = user.getUsername();
+		String name = user.getName();
+		String lastName = user.getLastName();
+		
+		Optional<User> currentUser = userRepository.findById(id);
+		
+		if(!currentUser.isPresent()){
+			throw new Exception("User not found");
+		} 
+		
+		User userToUpdate = currentUser.get();
+		
+		if (userRepository.existsByUsername(username)) {
+			if (!userToUpdate.getUsername().equals(username)) {
+				throw new CustomError("That username is already taken");
+			} 
+		}
+		
+		userToUpdate.setName(name);
+		userToUpdate.setLastName(lastName);
+		userToUpdate.setUsername(username);
+		userRepository.save(userToUpdate);
+		
+	}
+	
+	@Override
+	public void updateUserPassword(Password password, long id) throws Exception {
+		String newPassword = password.getNewPassword();
+		String oldPassword = password.getOldPassword();
+		
+		Optional<User> currentUser = userRepository.findById(id);
+		
+		if (!currentUser.isPresent()) {
+			throw new Exception("User not found");
+		} 
+		User userToUpdate = currentUser.get();
+		
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();  
+		if (!encoder.matches(oldPassword, userToUpdate.getPassword())) {
+			throw new UnauthorizedError("The passwords don't match");
+		}
+		
+		String encodedPassword = new BCryptPasswordEncoder().encode(newPassword);
+		userToUpdate.setPassword(encodedPassword);
+		userRepository.save(userToUpdate);
+	}
 
 	@Override
-	public void delete(long id) {
-		userRepository.deleteById(id);
+	public void delete(long id) throws Exception {
+		Optional<User> currentUser = userRepository.findById(id);
 		
+		if (!currentUser.isPresent()) {
+			throw new Exception("User not found");
+		} 
+		
+		User userToDelete = currentUser.get();
+		userRepository.deleteById(userToDelete.getId());
+
 	}
 
 	@Override
@@ -77,5 +217,52 @@ public class UserServiceImpl implements IUserService {
 		String jwtToken = requestTokenHeader.substring(7);
 		String username = jwtTokenUtil.getUsernameFromToken(jwtToken);
 		return userRepository.findByUsername(username);
+	}
+	
+	@Override
+	public void resetPassword(String userMail) throws Exception {
+		
+		if (userRepository.findByMail(userMail) == null) {
+			throw new Exception("No user found with that Email");
+		}
+		
+		User user = userRepository.findByMail(userMail);
+		
+		String newPassword = randomPassword(3);
+		String encodedPassword = new BCryptPasswordEncoder().encode(newPassword);
+		user.setPassword(encodedPassword);
+		userRepository.save(user);
+		
+		SimpleMailMessage passwordResetEmail = new SimpleMailMessage();
+		passwordResetEmail.setFrom("thegiftcher@gmail.com");
+		passwordResetEmail.setTo(user.getMail());
+		passwordResetEmail.setSubject("Password Reset Request");
+		passwordResetEmail.setText("Hi " + user.getName() + ",\nYou recently requested to reset your password for The Giftcher App account.\nYour new password is "
+		+ newPassword + "\nFor your account security we recommend you to change your password inmediatly after login. \n\nBest regards,\nThe Giftcher Team.");
+		emailService.sendEmail(passwordResetEmail);
+	}
+	
+	public static String randomPassword(int len) {
+	    String A = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	    String B = "abcdefghijklmnopqrstuvwxyz";
+	    String C = "0123456789";
+	    String D = "@!#$%";
+	    
+	    Random rnd = new Random();
+
+	    StringBuilder aa = new StringBuilder(len);
+	    StringBuilder bb = new StringBuilder(len);
+	    StringBuilder cc = new StringBuilder(len);
+	    StringBuilder dd = new StringBuilder(len);
+	    for (int i = 0; i < len; i++) {
+	        aa.append(A.charAt(rnd.nextInt(A.length())));
+	        aa.append(B.charAt(rnd.nextInt(B.length())));
+	        aa.append(C.charAt(rnd.nextInt(C.length())));
+	        aa.append(D.charAt(rnd.nextInt(D.length())));
+	    }
+	    
+	    String resetPassword = aa.toString() + bb.toString() + cc.toString() + dd.toString(); 
+	    
+	    return resetPassword;
 	}
 }
