@@ -3,6 +3,10 @@ package com.proyecto.thegiftcher.web.controller;
 import com.proyecto.thegiftcher.domain.Password;
 import com.proyecto.thegiftcher.domain.User;
 import com.proyecto.thegiftcher.service.IUserService;
+
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +48,7 @@ public class UserController {
 		Long id = user.getId();
 		userService.profileImage(file, id);
 
-		return Collections.singletonMap("message", "true");
+		return Collections.singletonMap("message", "Profile Image updated");
 	}
 	
 	@PutMapping(path = "/update")
@@ -65,6 +69,17 @@ public class UserController {
 
 		return Collections.singletonMap("message", "User password updated");
 		
+	}
+	
+	//Envía la imagen completa, se recibe, se coloca su extensión y se puede ver la imagen.
+	@GetMapping(path = "/get_profile_image")
+	public ResponseEntity<Resource> getProfileImage(HttpServletRequest request) throws Exception {
+		User user = userService.getUserLogged(request);
+		Long id = user.getId();
+		
+		Resource file = userService.loadProfileImageAsResource(id);
+		
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + user.getImageName() + "\"").body(file);
 	}
 
 	@DeleteMapping(path = "/delete_account")
