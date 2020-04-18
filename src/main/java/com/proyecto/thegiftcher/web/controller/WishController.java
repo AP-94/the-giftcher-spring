@@ -46,7 +46,6 @@ public class WishController {
 		return new ResponseEntity<>(wish, HttpStatus.OK);
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@PostMapping(path = "/")
 	public Map<String, String> addwish(@RequestBody Wish wish, HttpServletRequest request) {
 		wishService.create(wish, request);
@@ -60,7 +59,6 @@ public class WishController {
 		return Collections.singletonMap("message", "true");
 	}
 	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@PutMapping(path = "/{id}")
 	public Map<String, String> update(@RequestBody Wish wish, @PathVariable long id, HttpServletRequest request) {
 		wishService.modify(wish, id, request);
@@ -68,7 +66,6 @@ public class WishController {
 		return Collections.singletonMap("message", "Wish with name " + wish.getName() + " modifyed");
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@DeleteMapping(path = "/{id}")
 	public Map<String, String> delete(@PathVariable long id, HttpServletRequest request) {
 		wishService.delete(id, request);

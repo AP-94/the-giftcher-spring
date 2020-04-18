@@ -47,7 +47,6 @@ public class UserController {
 		return Collections.singletonMap("message", "true");
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@PutMapping(path = "/update")
 	public Map<String, String> updateUser(@RequestBody User user, HttpServletRequest request) throws Exception {
 		
@@ -58,7 +57,6 @@ public class UserController {
 		return Collections.singletonMap("message", "User updated");
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@PutMapping(path = "/update_password")
 	public Map<String, String> updateUserPassword(@RequestBody Password password, HttpServletRequest request) throws Exception {
 		User user = userService.getUserLogged(request);
@@ -69,7 +67,6 @@ public class UserController {
 		
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@DeleteMapping(path = "/delete_account")
 	public Map<String, String> delete(HttpServletRequest request) throws Exception {
 		User user = userService.getUserLogged(request);
@@ -79,7 +76,6 @@ public class UserController {
 		
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@PostMapping(path = "/reset_password")
 	public Map<String, String> resetPassword(@RequestParam String userMail) throws Exception {
 		userService.resetPassword(userMail);
