@@ -79,7 +79,7 @@ public class CategoryController {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	@DeleteMapping(path = "/categoriee/{id}")
+	@DeleteMapping(path = "/categories/{id}")
 	public Map<String, String> delete(@PathVariable long id) throws Exception {
 
 		Optional<Category> currentCategory = categoryRepository.findById(id);

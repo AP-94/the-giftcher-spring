@@ -18,6 +18,10 @@ public class Category implements Serializable {
 	@Size(min = 3, max = 50)
 	private String categoryName;
 
+	public Category() {
+
+	}
+
 	public Category(String categoryName) {
 		super();
 		this.categoryName = categoryName;
@@ -35,7 +39,7 @@ public class Category implements Serializable {
 		this.id = id;
 	}
 
-	public String getNombreCategoria() {
+	public String getCategoryName() {
 		return categoryName;
 	}
 
@@ -64,8 +68,4 @@ public class Category implements Serializable {
 		return "Category{" + "id=" + getId() + ", categoryName='" + getCategoryName() + "'" + "}";
 	}
 
-	public String getCategoryName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }
