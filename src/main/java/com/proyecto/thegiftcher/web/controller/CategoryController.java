@@ -48,7 +48,6 @@ public class CategoryController {
 		return Collections.singletonMap("message", "true");
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@PutMapping(path = "/categories/{id}")
 	public Map<String, String> updateCategory(@RequestBody Category category) throws Exception {
 
@@ -78,7 +77,6 @@ public class CategoryController {
 
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@DeleteMapping(path = "/categories/{id}")
 	public Map<String, String> delete(@PathVariable long id) throws Exception {
 

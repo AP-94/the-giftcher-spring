@@ -2,12 +2,14 @@ package com.proyecto.thegiftcher.service;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import com.proyecto.thegiftcher.domain.Password;
-import com.proyecto.thegiftcher.domain.User;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.proyecto.thegiftcher.domain.Password;
+import com.proyecto.thegiftcher.domain.User;
 
 public interface IUserService {
 	

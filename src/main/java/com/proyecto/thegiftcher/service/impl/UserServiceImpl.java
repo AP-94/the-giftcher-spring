@@ -88,9 +88,9 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public Resource loadProfileImageAsResource(long id) {
 		User user = get(id);
-		String imageName = user.getImageName();
+		String imagePath = user.getImagePath();
 		try {
-			Path file = Paths.get("/Users/alessandropace/Desktop/TheGiftcher/the-giftcher-spring/thegiftcher/profileImages/" + imageName);
+			Path file = Paths.get(imagePath);
 			Resource resource = new UrlResource(file.toUri());
 			if(resource.exists() || resource.isReadable()) {
 				return resource;
