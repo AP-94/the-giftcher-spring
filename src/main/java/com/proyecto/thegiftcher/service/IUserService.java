@@ -5,6 +5,8 @@ import java.util.List;
 import com.proyecto.thegiftcher.domain.Password;
 import com.proyecto.thegiftcher.domain.User;
 import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface IUserService {
@@ -14,6 +16,7 @@ public interface IUserService {
 	User getByUsername(String username);
 	User getUserLogged(HttpServletRequest request);
 	List<User> getAll();
+	Resource loadProfileImageAsResource(long id);
 	void post(User user);
 	void put(User user, long id);
 	void updateUser(User user);

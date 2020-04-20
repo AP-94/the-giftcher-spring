@@ -3,6 +3,8 @@ package com.proyecto.thegiftcher.service.impl;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
@@ -14,8 +16,11 @@ import com.proyecto.thegiftcher.config.JwtTokenUtil;
 import com.proyecto.thegiftcher.service.IEmailService;
 import com.proyecto.thegiftcher.service.IUserService;
 import com.proyecto.thegiftcher.web.error.CustomError;
+import com.proyecto.thegiftcher.web.error.StorageFileNotFoundException;
 import com.proyecto.thegiftcher.web.error.UnauthorizedError;
 
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -77,6 +82,25 @@ public class UserServiceImpl implements IUserService {
 		if (userRepository.existsByUsername(user.getUsername())) {
 			user.setId(user.getId());
 			userRepository.save(user);
+		}
+	}
+	
+	@Override
+	public Resource loadProfileImageAsResource(long id) {
+		User user = get(id);
+		String imageName = user.getImageName();
+		try {
+			Path file = Paths.get("/Users/alessandropace/Desktop/TheGiftcher/the-giftcher-spring/thegiftcher/profileImages/" + imageName);
+			Resource resource = new UrlResource(file.toUri());
+			if(resource.exists() || resource.isReadable()) {
+				return resource;
+			}
+			else {
+				throw new StorageFileNotFoundException("Could not read file: profile_picture_" + id);
+
+			}
+		} catch (MalformedURLException e) {
+			throw new StorageFileNotFoundException("Could not read file: profile_picture_" + id, e);
 		}
 	}
 	
