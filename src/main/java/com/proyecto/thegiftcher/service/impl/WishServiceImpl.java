@@ -23,7 +23,7 @@ public class WishServiceImpl implements IWishService {
 
 	private final WishRepository wishRepository;
 	private final IUserService userService;
-	public static String wishImagesDirectory = System.getProperty("user.dir") + "/wishImages";
+	public static String wishImagesDirectory = "/home/ec2-user/wishImages";
 
 
 	public WishServiceImpl(WishRepository wishRepository, IUserService userService) {

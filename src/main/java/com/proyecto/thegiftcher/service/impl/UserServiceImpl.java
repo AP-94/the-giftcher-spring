@@ -39,7 +39,7 @@ public class UserServiceImpl implements IUserService {
 	private final UserRepository userRepository;
 	private final JwtTokenUtil jwtTokenUtil;
 	private final IEmailService emailService;
-	public static String profileImagesDirectory = System.getProperty("user.dir") + "/profileImages";
+	public static String profileImagesDirectory = "/home/ec2-user/profileImages";
 
 	public UserServiceImpl(UserRepository userRepository, JwtTokenUtil jwtTokenUtil, IEmailService emailService) {
 		this.userRepository = userRepository;

@@ -1,18 +1,22 @@
 package com.proyecto.thegiftcher.web.controller;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.proyecto.thegiftcher.domain.Wish;
 import com.proyecto.thegiftcher.service.IWishService;
-
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping(
@@ -73,13 +77,25 @@ public class WishController {
 		return Collections.singletonMap("message", "Wish with id: " + id + " deleted");
 	}
 	
-	@PutMapping("/wish_images/{id}")
+	@PutMapping("/wish_image/{id}")
 	public Map<String, String> setImage(@PathVariable(value = "id") long id,
 										@RequestParam("file") MultipartFile file, HttpServletRequest request)
 			throws Exception {
 		
 		wishService.addImages(id, file, request);
 		return Collections.singletonMap("message", "true");
+	}
+	
+	@GetMapping(path = "/wish_image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
+	public void getWishImage(@PathVariable(value = "id") long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Wish wish = wishService.get(id, request);
+		String wishPath = wish.getImagePath();
+		
+		Path file = Paths.get(wishPath);
+		Resource imagFile = new UrlResource(file.toUri());
+		
+		response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+		StreamUtils.copy(imagFile.getInputStream(), response.getOutputStream());
 	}
    
 }
