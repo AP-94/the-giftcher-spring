@@ -1,7 +1,7 @@
 package com.proyecto.thegiftcher.web.controller;
 
-import com.proyecto.thegiftcher.domain.Friend;
 import com.proyecto.thegiftcher.domain.FriendRequest;
+import com.proyecto.thegiftcher.domain.User;
 import com.proyecto.thegiftcher.service.IFriendService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +23,8 @@ public class FriendController {
 	}
 
 	@GetMapping(path = "/friends")
-	public ResponseEntity<List<Friend>> getFriends(HttpServletRequest request) {
-		List<Friend> friends = friendService.getFriends(request);
+	public ResponseEntity<List<User>> getFriends(HttpServletRequest request) {
+		List<User> friends = friendService.getFriends(request);
 		if (CollectionUtils.isEmpty(friends)) {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}

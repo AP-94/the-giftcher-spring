@@ -10,6 +10,8 @@ import com.proyecto.thegiftcher.service.IUserService;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,9 +30,18 @@ public class FriendServiceImpl implements IFriendService {
 	}
 
 	@Override
-	public List<Friend> getFriends(HttpServletRequest request) {
+	public List<User> getFriends(HttpServletRequest request) {
 		User user = userService.getUserLogged(request);
-		return (List<Friend>) friendRepository.findAllFriendsByUserId(user.getId());
+		List<User> friendsOfUser = new ArrayList<User>();
+		List<Friend> friends = (List<Friend>) friendRepository.findAllFriendsByUserId(user.getId());
+		
+		for(Friend friend : friends) {
+			Long friendId = friend.getFriendId();
+			User userFriend = userService.get(friendId);
+			friendsOfUser.add(userFriend);
+		}
+		
+		return friendsOfUser;
 	}
 
 	@Override
