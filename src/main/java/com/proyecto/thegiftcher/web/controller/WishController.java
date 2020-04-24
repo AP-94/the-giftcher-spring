@@ -35,6 +35,12 @@ public class WishController {
 		List<Wish> wishes = wishService.getAll(request);
 		return new ResponseEntity<>(wishes, HttpStatus.OK);
 	}
+
+	@GetMapping(path = "/userId/{userId}")
+	public ResponseEntity<List<Wish>> getWishes(@PathVariable long userId){
+		List<Wish> wishes = wishService.getUserWishes(userId);
+		return new ResponseEntity<>(wishes, HttpStatus.OK);
+	}
 	
 	@GetMapping(path = "/{id}")
 	public ResponseEntity<Wish> getOne(@PathVariable long id, HttpServletRequest request) throws Exception {

@@ -12,7 +12,7 @@ public interface IWishService {
 
 	List<Wish> getAll(HttpServletRequest userId);
 	Wish get(long id, HttpServletRequest request) throws Exception;
-
+	List<Wish> getUserWishes(long userId);
 	List<Wish> getWishByCategoryId(long categoryId) throws Exception;
 
 	void create(Wish wish, HttpServletRequest request);
@@ -20,4 +20,6 @@ public interface IWishService {
 	void modify(Wish wish, long id, HttpServletRequest request);
 	void delete(long id, HttpServletRequest request);
 	void addImages(long id, MultipartFile file, HttpServletRequest request) throws Exception;
+
+
 }

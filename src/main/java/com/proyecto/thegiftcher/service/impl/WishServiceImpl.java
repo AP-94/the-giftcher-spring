@@ -39,6 +39,13 @@ public class WishServiceImpl implements IWishService {
 	}
 
 	@Override
+	public List<Wish> getUserWishes(long userId) {
+		User user = userService.get(userId);
+
+		return (List<Wish>) wishRepository.findAllWishesByUserId(user.getId());
+	}
+
+	@Override
 	public Wish get(long id, HttpServletRequest request) throws Exception {
 		User user = userService.getUserLogged(request);
 		Optional<Wish> wish = wishRepository.findWishByUserIdAndId(user.getId(), id);
