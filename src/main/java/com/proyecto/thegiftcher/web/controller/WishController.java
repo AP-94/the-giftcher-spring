@@ -30,6 +30,12 @@ public class WishController {
 		this.wishService = wishService;
 	}
 	
+	@GetMapping(path = "/all_wishes")
+	public ResponseEntity<List<Wish>> getAllWishes() {
+		List<Wish> allWishes = wishService.getAll();
+		return new ResponseEntity<>(allWishes, HttpStatus.OK);
+	}
+	
 	@GetMapping(path = "/")
 	public ResponseEntity<List<Wish>> getWishes(HttpServletRequest request){
 		List<Wish> wishes = wishService.getAll(request);
@@ -63,7 +69,7 @@ public class WishController {
 	}
 
 	@PostMapping(path = "/copy/userId/{userId}/id/{id}")
-	public Map<String, String> copyWishFromUser(@PathVariable long userId, @PathVariable long id, HttpServletRequest request) {
+	public Map<String, String> copyWishFromUser(@PathVariable long userId, @PathVariable long id, HttpServletRequest request) throws Exception {
 		wishService.copyWishFromUser(userId, id, request);
 
 		return Collections.singletonMap("message", "true");

@@ -1,8 +1,11 @@
 package com.proyecto.thegiftcher.service.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,17 +14,27 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.UUID;
 
+import com.google.auth.Credentials;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.proyecto.thegiftcher.config.JwtTokenUtil;
 import com.proyecto.thegiftcher.service.IEmailService;
+
 import com.proyecto.thegiftcher.service.IUserService;
 import com.proyecto.thegiftcher.web.error.CustomError;
 import com.proyecto.thegiftcher.web.error.StorageFileNotFoundException;
 import com.proyecto.thegiftcher.web.error.UnauthorizedError;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +43,7 @@ import com.proyecto.thegiftcher.domain.Password;
 import com.proyecto.thegiftcher.domain.User;
 import com.proyecto.thegiftcher.repository.UserRepository;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
 
@@ -40,8 +54,12 @@ public class UserServiceImpl implements IUserService {
 	private final JwtTokenUtil jwtTokenUtil;
 	private final IEmailService emailService;
 	public static String profileImagesDirectory = "/home/ec2-user/profileImages";
-
-	public UserServiceImpl(UserRepository userRepository, JwtTokenUtil jwtTokenUtil, IEmailService emailService) {
+	
+	@Autowired
+	private JwtUserDetailsServiceImpl jwtUserDetailsServiceImpl;
+	
+	
+	public UserServiceImpl(UserRepository userRepository, JwtTokenUtil jwtTokenUtil, IEmailService emailService) throws IOException {
 		this.userRepository = userRepository;
 		this.jwtTokenUtil = jwtTokenUtil;
 		this.emailService = emailService;
@@ -169,10 +187,11 @@ public class UserServiceImpl implements IUserService {
 	}
 	
 	@Override
-	public void updateUser(User user, long id) throws Exception {
+	public User updateUser(User user, long id) throws Exception {
 		String username = user.getUsername();
 		String name = user.getName();
 		String lastName = user.getLastName();
+		Date birthday = user.getBirthday();
 		
 		Optional<User> currentUser = userRepository.findById(id);
 		
@@ -188,11 +207,17 @@ public class UserServiceImpl implements IUserService {
 			} 
 		}
 		
+		UserDetails userDetails = jwtUserDetailsServiceImpl.loadUserByUsername(user.getUsername());
+		final String token = jwtTokenUtil.generateToken(userDetails);
+		
+		userToUpdate.setToken(token);
 		userToUpdate.setName(name);
 		userToUpdate.setLastName(lastName);
 		userToUpdate.setUsername(username);
+		userToUpdate.setBirthday(birthday);
 		userRepository.save(userToUpdate);
 		
+		return userToUpdate;
 	}
 	
 	@Override
@@ -289,4 +314,60 @@ public class UserServiceImpl implements IUserService {
 	    
 	    return resetPassword;
 	}
+
+	@Override
+	public User profileImageGoogleCloud(MultipartFile file, long id) throws Exception {
+        checkFileExtension(file.getName());
+        Optional<User> currentUser = userRepository.findById(id);
+        User user = currentUser.get();
+        
+    	String imageOriginalName = file.getOriginalFilename();
+		String imageExtension = imageOriginalName.substring(imageOriginalName.lastIndexOf(".") + 1);
+		String imageName = UUID.randomUUID().toString() + "." + imageExtension;
+		
+		File image = convertMultiPartToFile(file);
+        InputStream inputStream = new FileInputStream(image);
+    
+        Bucket bucket = getBucket("thegiftcher");
+        Blob blob = bucket.create(imageName, inputStream, file.getContentType());
+        System.out.println(blob.getSelfLink());
+        
+        String imageLink = "https://storage.googleapis.com/thegiftcher/" + imageName;
+        user.setImagePath(imageLink);
+        user.setImageName(imageName);
+        
+        return userRepository.save(user);
+    }
+	
+	private Bucket getBucket(String bucketName) throws IOException {
+		Credentials credentials = GoogleCredentials.fromStream(new FileInputStream("/home/ec2-user/GCP.json"));
+	    Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+	    Bucket bucket = storage.get(bucketName);
+	    if (bucket == null) {
+	      throw new IOException("Bucket not found:"+bucketName);
+	    }
+	    return bucket;
+	  }
+	
+	private File convertMultiPartToFile(MultipartFile file ) throws IOException
+    {
+        File convFile = new File( file.getOriginalFilename() );
+        FileOutputStream fos = new FileOutputStream( convFile );
+        fos.write( file.getBytes() );
+        fos.close();
+        return convFile;
+    }
+
+    private void checkFileExtension(String fileName) throws ServletException {
+        if (fileName != null && !fileName.isEmpty() && fileName.contains(".")) {
+            String[] allowedExt = {".jpg", ".jpeg", ".png", ".gif"};
+            for (String ext : allowedExt) {
+                if (fileName.endsWith(ext)) {
+                    return;
+                }
+            }
+            throw new ServletException("file must be an image");
+        }
+}
+    
 }

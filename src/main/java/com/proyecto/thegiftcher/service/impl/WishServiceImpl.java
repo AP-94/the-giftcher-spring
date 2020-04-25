@@ -30,6 +30,11 @@ public class WishServiceImpl implements IWishService {
 		this.wishRepository = wishRepository;
 		this.userService = userService;
 	}
+	
+	@Override
+	public List<Wish> getAll() {
+		return (List<Wish>) wishRepository.findAll();
+	}
 
 	@Override
 	public List<Wish> getAll(HttpServletRequest request) {
@@ -70,7 +75,7 @@ public class WishServiceImpl implements IWishService {
 
 
 	@Override
-	public void copyWishFromUser(long userId, long id, HttpServletRequest request) {
+	public void copyWishFromUser(long userId, long id, HttpServletRequest request) throws Exception {
 		//recuperar si existe
 		Optional<Wish> wishByUserIdAndId = wishRepository.findWishByUserIdAndId(userId, id);
 		if (wishByUserIdAndId.isPresent()) {
@@ -94,6 +99,8 @@ public class WishServiceImpl implements IWishService {
 
 			//insertar
 			wishRepository.save(newWish);
+		} else {
+			throw new Exception("Wish not found");
 		}
 
 	}

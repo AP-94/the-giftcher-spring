@@ -70,13 +70,11 @@ public class UserController {
 	}
 	
 	@PutMapping(path = "/update")
-	public Map<String, String> updateUser(@RequestBody User user, HttpServletRequest request) throws Exception {
-		
+	public User updateUser(@RequestBody User user, HttpServletRequest request) throws Exception {
 		User userLogged = userService.getUserLogged(request);
 		Long id = userLogged.getId();
-		userService.updateUser(user, id);
-
-		return Collections.singletonMap("message", "User updated");
+		
+		return userService.updateUser(user, id);
 	}
 	
 	@PutMapping(path = "/update_password")
@@ -98,6 +96,15 @@ public class UserController {
 		Resource  file = userService.loadProfileImageAsResource(id);
 		
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + user.getImageName() + "\"").body(file);
+	}
+	
+	//La 3ra es la vencida, imagen con google cloud storage
+	@PostMapping(path = "/google_cloud_image")
+	public User uploadToGCP(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws Exception {
+		User user = userService.getUserLogged(request);
+		Long id = user.getId();
+
+		return userService.profileImageGoogleCloud(file, id);
 	}
 
 	@DeleteMapping(path = "/delete_account")
