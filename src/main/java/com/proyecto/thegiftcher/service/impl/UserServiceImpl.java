@@ -56,8 +56,8 @@ public class UserServiceImpl implements IUserService {
 	public static String profileImagesDirectory = "/home/ec2-user/profileImages";
 	
 	
-	@Autowired
-	private JwtUserDetailsServiceImpl jwtUserDetailsServiceImpl;
+//	@Autowired
+//	private JwtUserDetailsServiceImpl jwtUserDetailsServiceImpl;
 	
 	
 	public UserServiceImpl(UserRepository userRepository, JwtTokenUtil jwtTokenUtil, IEmailService emailService) throws IOException {

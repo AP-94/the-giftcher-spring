@@ -220,7 +220,7 @@ public class WishServiceImpl implements IWishService {
     }
 	
 	private Bucket getBucket(String bucketName) throws IOException {
-		Credentials credentials = GoogleCredentials.fromStream(new FileInputStream("/Users/alessandropace/Desktop/TheGiftcher/the-giftcher-spring/GCP.json"));
+		Credentials credentials = GoogleCredentials.fromStream(new FileInputStream("/home/ec2-user/GCP.json"));
 	    Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
 	    Bucket bucket = storage.get(bucketName);
 	    if (bucket == null) {
