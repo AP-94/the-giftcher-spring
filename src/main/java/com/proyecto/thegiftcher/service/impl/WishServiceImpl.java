@@ -1,12 +1,22 @@
 package com.proyecto.thegiftcher.service.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
+import com.google.auth.Credentials;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.proyecto.thegiftcher.domain.User;
 import com.proyecto.thegiftcher.service.IUserService;
 import com.proyecto.thegiftcher.service.IWishService;
@@ -16,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.proyecto.thegiftcher.domain.Wish;
 import com.proyecto.thegiftcher.repository.WishRepository;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 @Service
@@ -175,5 +186,68 @@ public class WishServiceImpl implements IWishService {
 		wishToUpdate.setImagePath(imagePath);
 		wishRepository.save(wishToUpdate);
 	}
+	
+	@Override
+	public Wish wishImageGoogleCloud(MultipartFile file, long id, HttpServletRequest request) throws Exception {
+        checkFileExtension(file.getName());
+        User user = userService.getUserLogged(request);
+        
+    	String imageOriginalName = file.getOriginalFilename();
+		String imageExtension = imageOriginalName.substring(imageOriginalName.lastIndexOf(".") + 1);
+		String imageName = UUID.randomUUID().toString() + "." + imageExtension;
+		
+		File image = convertMultiPartToFile(file);
+        InputStream inputStream = new FileInputStream(image);
+    
+        Bucket bucket = getBucket("thegiftcher");
+        Blob blob = bucket.create(imageName, inputStream, file.getContentType());
+        System.out.println(blob.getSelfLink());
+        
+        
+        Optional<Wish> currentWish = wishRepository.findWishByUserIdAndId(user.getId(), id);
+		
+		if (!currentWish.isPresent()) {
+			throw new Exception("Wish not found");
+		}
+		
+        Wish wishToUpdate = currentWish.get();
+        
+        String imageLink = "https://storage.googleapis.com/thegiftcher/" + imageName;
+        wishToUpdate.setImagePath(imageLink);
+        wishToUpdate.setImageName(imageName);
+        
+        return wishRepository.save(wishToUpdate);
+    }
+	
+	private Bucket getBucket(String bucketName) throws IOException {
+		Credentials credentials = GoogleCredentials.fromStream(new FileInputStream("/Users/alessandropace/Desktop/TheGiftcher/the-giftcher-spring/GCP.json"));
+	    Storage storage = StorageOptions.newBuilder().setCredentials(credentials).build().getService();
+	    Bucket bucket = storage.get(bucketName);
+	    if (bucket == null) {
+	      throw new IOException("Bucket not found:"+bucketName);
+	    }
+	    return bucket;
+	  }
+	
+	private File convertMultiPartToFile(MultipartFile file ) throws IOException
+    {
+        File convFile = new File( file.getOriginalFilename() );
+        FileOutputStream fos = new FileOutputStream( convFile );
+        fos.write( file.getBytes() );
+        fos.close();
+        return convFile;
+    }
+
+    private void checkFileExtension(String fileName) throws ServletException {
+        if (fileName != null && !fileName.isEmpty() && fileName.contains(".")) {
+            String[] allowedExt = {".jpg", ".jpeg", ".png", ".gif"};
+            for (String ext : allowedExt) {
+                if (fileName.endsWith(ext)) {
+                    return;
+                }
+            }
+            throw new ServletException("file must be an image");
+        }
+}
 
 }

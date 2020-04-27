@@ -98,6 +98,15 @@ public class WishController {
 		return Collections.singletonMap("message", "true");
 	}
 	
+	//La 3ra es la vencida, wish imagen con google cloud storage
+		@PostMapping(path = "/google_cloud_wish_image/{id}")
+		public Wish uploadToGCP(@PathVariable(value = "id") long id, 
+								@RequestParam("file") MultipartFile file, 
+								HttpServletRequest request) throws Exception {
+			
+			return wishService.wishImageGoogleCloud(file, id, request);
+		}
+	
 	@GetMapping(path = "/wish_image/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
 	public void getWishImage(@PathVariable(value = "id") long id, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Wish wish = wishService.get(id, request);

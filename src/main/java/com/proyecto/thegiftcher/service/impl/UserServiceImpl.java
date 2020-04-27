@@ -55,6 +55,7 @@ public class UserServiceImpl implements IUserService {
 	private final IEmailService emailService;
 	public static String profileImagesDirectory = "/home/ec2-user/profileImages";
 	
+	
 	@Autowired
 	private JwtUserDetailsServiceImpl jwtUserDetailsServiceImpl;
 	
@@ -207,10 +208,10 @@ public class UserServiceImpl implements IUserService {
 			} 
 		}
 		
-		UserDetails userDetails = jwtUserDetailsServiceImpl.loadUserByUsername(user.getUsername());
-		final String token = jwtTokenUtil.generateToken(userDetails);
-		
-		userToUpdate.setToken(token);
+//		UserDetails userDetails = jwtUserDetailsServiceImpl.loadUserByUsername(user.getUsername());
+//		final String token = jwtTokenUtil.generateToken(userDetails);
+//				
+//		userToUpdate.setToken(token);
 		userToUpdate.setName(name);
 		userToUpdate.setLastName(lastName);
 		userToUpdate.setUsername(username);
