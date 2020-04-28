@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.auth.Credentials;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -34,6 +36,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -54,11 +60,13 @@ public class UserServiceImpl implements IUserService {
 	private final JwtTokenUtil jwtTokenUtil;
 	private final IEmailService emailService;
 	public static String profileImagesDirectory = "/home/ec2-user/profileImages";
+	private final static Logger LOGGER = Logger.getLogger("JwtAuthenticationController");
 	
+	@Autowired
+	private AuthenticationManager authenticationManager;
 	
-//	@Autowired
-//	private JwtUserDetailsServiceImpl jwtUserDetailsServiceImpl;
-	
+	@Autowired
+	private JwtUserDetailsServiceImpl jwtUserDetailsServiceImpl;
 	
 	public UserServiceImpl(UserRepository userRepository, JwtTokenUtil jwtTokenUtil, IEmailService emailService) throws IOException {
 		this.userRepository = userRepository;
@@ -75,7 +83,35 @@ public class UserServiceImpl implements IUserService {
 	public User findUserByMail(String email) {
 		return userRepository.findByMail(email);
 	}
-
+	
+	@Override
+	public User register(User user) throws Exception {
+		registerUser(user);
+		User completeUser = getByUsername(user.getUsername());
+		
+		LOGGER.log(Level.INFO,
+				"******** " + user.getUsername() + " " + user.getPassword());
+		authenticate(user.getUsername(), user.getPassword());
+		UserDetails userDetails = jwtUserDetailsServiceImpl.loadUserByUsername(user.getUsername());
+		final String token = jwtTokenUtil.generateToken(userDetails);
+		completeUser.setToken(token);
+		
+		return completeUser;
+	}
+	
+	@Override
+	public User login(User authenticationRequest) throws Exception {
+		LOGGER.log(Level.INFO,
+				"******** " + authenticationRequest.getUsername() + " " + authenticationRequest.getPassword());
+		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+		UserDetails userDetails = jwtUserDetailsServiceImpl.loadUserByUsername(authenticationRequest.getUsername());
+		User user = getByUsername(authenticationRequest.getUsername());
+		final String token = jwtTokenUtil.generateToken(userDetails);
+		user.setToken(token);
+		
+		return user;
+	}
+	
 	@Override
 	public List<User> getAll() {
 		return (List<User>) userRepository.findAll();
@@ -208,15 +244,16 @@ public class UserServiceImpl implements IUserService {
 			} 
 		}
 		
-//		UserDetails userDetails = jwtUserDetailsServiceImpl.loadUserByUsername(user.getUsername());
-//		final String token = jwtTokenUtil.generateToken(userDetails);
-//				
-//		userToUpdate.setToken(token);
 		userToUpdate.setName(name);
 		userToUpdate.setLastName(lastName);
 		userToUpdate.setUsername(username);
 		userToUpdate.setBirthday(birthday);
 		userRepository.save(userToUpdate);
+		
+		UserDetails userDetails = jwtUserDetailsServiceImpl.loadUserByUsername(username);
+		final String token = jwtTokenUtil.generateToken(userDetails);
+				
+		userToUpdate.setToken(token);
 		
 		return userToUpdate;
 	}
@@ -370,5 +407,14 @@ public class UserServiceImpl implements IUserService {
             throw new ServletException("file must be an image");
         }
 }
+    private void authenticate(String username, String password) throws Exception {
+		try {
+			authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+		} catch (DisabledException e) {
+			throw new Exception("USER_DISABLED", e);
+		} catch (BadCredentialsException e) {
+			throw new Exception("INVALID_CREDENTIALS", e);
+		}
+	}
     
 }

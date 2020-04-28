@@ -16,9 +16,9 @@ public interface IWishService {
 	List<Wish> getUserWishes(long userId);
 	List<Wish> getWishByCategoryId(long categoryId) throws Exception;
 	Wish wishImageGoogleCloud(MultipartFile file, long id, HttpServletRequest request) throws Exception;
-	void create(Wish wish, HttpServletRequest request);
-	void copyWishFromUser(long userId, long id, HttpServletRequest request) throws Exception;
-	void modify(Wish wish, long id, HttpServletRequest request);
+	Wish create(Wish wish, HttpServletRequest request);
+	Wish copyWishFromUser(long userId, long id, HttpServletRequest request) throws Exception;
+	Wish modify(Wish wish, long id, HttpServletRequest request) throws Exception;
 	void delete(long id, HttpServletRequest request);
 	void addImages(long id, MultipartFile file, HttpServletRequest request) throws Exception;
 

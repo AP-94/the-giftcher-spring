@@ -78,15 +78,16 @@ public class WishServiceImpl implements IWishService {
 	}
 
 	@Override
-	public void create(Wish wish, HttpServletRequest request) {
+	public Wish create(Wish wish, HttpServletRequest request) {
 		User user = userService.getUserLogged(request);
 		wish.setUserId(user.getId());
 		wishRepository.save(wish);
+		return wish;
 	}
 
 
 	@Override
-	public void copyWishFromUser(long userId, long id, HttpServletRequest request) throws Exception {
+	public Wish copyWishFromUser(long userId, long id, HttpServletRequest request) throws Exception {
 		//recuperar si existe
 		Optional<Wish> wishByUserIdAndId = wishRepository.findWishByUserIdAndId(userId, id);
 		if (wishByUserIdAndId.isPresent()) {
@@ -110,30 +111,35 @@ public class WishServiceImpl implements IWishService {
 
 			//insertar
 			wishRepository.save(newWish);
+			return newWish;
 		} else {
 			throw new Exception("Wish not found");
 		}
-
 	}
 
 	@Override
-	public void modify(Wish wish, long id, HttpServletRequest request) {
+	public Wish modify(Wish wish, long id, HttpServletRequest request) throws Exception {
 		User user = userService.getUserLogged(request);
-		wishRepository.findWishByUserIdAndId(user.getId(), id).ifPresent(x -> {
-			x.setName(wish.getName());
-			x.setPrice(wish.getPrice());
-			x.setDescription(wish.getDescription());
-			x.setCategory(wish.getCategory());
-			x.setLocation(wish.getLocation());
-			x.setOnline_shop(wish.getOnlineShop());
-			x.setShop(wish.getShop());
-			x.setImagePath(wish.getImagePath());
-			x.setImageName(wish.getImageName());
-			x.setReserved(wish.isReserved());
-			x.setImageName(wish.getImageName());
-			wishRepository.save(x);
-		});
 		
+		if (wishRepository.findWishByUserIdAndId(user.getId(), id).isPresent()) {
+			Optional<Wish> getWish = wishRepository.findWishByUserIdAndId(user.getId(), id);
+			Wish modifiedWish = getWish.get();
+			modifiedWish.setName(wish.getName());
+			modifiedWish.setPrice(wish.getPrice());
+			modifiedWish.setDescription(wish.getDescription());
+			modifiedWish.setCategory(wish.getCategory());
+			modifiedWish.setLocation(wish.getLocation());
+			modifiedWish.setOnline_shop(wish.getOnlineShop());
+			modifiedWish.setShop(wish.getShop());
+			modifiedWish.setImagePath(wish.getImagePath());
+			modifiedWish.setImageName(wish.getImageName());
+			modifiedWish.setReserved(wish.isReserved());
+			modifiedWish.setImageName(wish.getImageName());
+			wishRepository.save(modifiedWish);
+			return modifiedWish;
+		} else {
+			throw new Exception("Wish not found");
+		}
 	}
 
 	@Override

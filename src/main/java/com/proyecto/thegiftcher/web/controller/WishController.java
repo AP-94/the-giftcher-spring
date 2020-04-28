@@ -63,23 +63,18 @@ public class WishController {
 	}
 	
 	@PostMapping(path = "/")
-	public Map<String, String> addwish(@RequestBody Wish wish, HttpServletRequest request) {
-		wishService.create(wish, request);
-		return Collections.singletonMap("message", "New wish added successfully");
+	public Wish addwish(@RequestBody Wish wish, HttpServletRequest request) {
+		return wishService.create(wish, request);
 	}
 
 	@PostMapping(path = "/copy/userId/{userId}/id/{id}")
-	public Map<String, String> copyWishFromUser(@PathVariable long userId, @PathVariable long id, HttpServletRequest request) throws Exception {
-		wishService.copyWishFromUser(userId, id, request);
-
-		return Collections.singletonMap("message", "true");
+	public Wish copyWishFromUser(@PathVariable long userId, @PathVariable long id, HttpServletRequest request) throws Exception {
+		return wishService.copyWishFromUser(userId, id, request);
 	}
 	
 	@PutMapping(path = "/{id}")
-	public Map<String, String> update(@RequestBody Wish wish, @PathVariable long id, HttpServletRequest request) {
-		wishService.modify(wish, id, request);
-
-		return Collections.singletonMap("message", "Wish with name " + wish.getName() + " modifyed");
+	public Wish update(@RequestBody Wish wish, @PathVariable long id, HttpServletRequest request) throws Exception {
+		return wishService.modify(wish, id, request);
 	}
 
 	@DeleteMapping(path = "/{id}")

@@ -55,7 +55,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				"/user/register",
 				"/user/reset_password",
 				"/user/update")
-				.permitAll().anyRequest().authenticated().and().exceptionHandling()
+				.permitAll()
+				.anyRequest().authenticated()
+				.and().exceptionHandling()
 				.authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

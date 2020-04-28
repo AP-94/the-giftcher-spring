@@ -15,6 +15,8 @@ public interface IUserService {
 	
 	User get(long id);
 	User findUserByMail(String email);
+	User register(User user) throws Exception;
+	User login(User user) throws Exception;
 	User getByUsername(String username);
 	User getUserLogged(HttpServletRequest request);
 	User updateUser(User user, long id) throws Exception;
