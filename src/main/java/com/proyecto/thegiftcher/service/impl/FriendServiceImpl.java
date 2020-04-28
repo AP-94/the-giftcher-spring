@@ -7,11 +7,12 @@ import com.proyecto.thegiftcher.repository.FriendRepository;
 import com.proyecto.thegiftcher.repository.FriendRequestRepository;
 import com.proyecto.thegiftcher.service.IFriendService;
 import com.proyecto.thegiftcher.service.IUserService;
+import com.proyecto.thegiftcher.web.BadRequestAlertException;
+import com.proyecto.thegiftcher.web.FriendException;
+import com.proyecto.thegiftcher.web.FriendRequestException;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,18 +31,9 @@ public class FriendServiceImpl implements IFriendService {
 	}
 
 	@Override
-	public List<User> getFriends(HttpServletRequest request) {
+	public List<Friend> getFriends(HttpServletRequest request) {
 		User user = userService.getUserLogged(request);
-		List<User> friendsOfUser = new ArrayList<User>();
-		List<Friend> friends = (List<Friend>) friendRepository.findAllFriendsByUserId(user.getId());
-		
-		for(Friend friend : friends) {
-			Long friendId = friend.getFriendId();
-			User userFriend = userService.get(friendId);
-			friendsOfUser.add(userFriend);
-		}
-		
-		return friendsOfUser;
+		return  (List<Friend>) friendRepository.findAllFriendsByUserId(user.getId());
 	}
 
 	@Override
@@ -52,8 +44,25 @@ public class FriendServiceImpl implements IFriendService {
 	}
 
 	@Override
-	public void createFriendRequest(FriendRequest friendRequest, HttpServletRequest request) {
+	public void createFriendRequest(FriendRequest friendRequest, HttpServletRequest request)
+			throws BadRequestAlertException, FriendRequestException, FriendException {
+
 		User user = userService.getUserLogged(request);
+
+		if (user.getId().equals(friendRequest.getFriendRequestId())) {
+			throw new BadRequestAlertException("ERROR: You can't be your own friend");
+		}
+
+		Optional<FriendRequest> friendRequestId = friendRequestRepository.findFriendRequestsByUserIdAndFriendRequestId(user.getId(), friendRequest.getFriendRequestId());
+		if (friendRequestId.isPresent()) {
+			throw new FriendRequestException("ERROR: This friend request already exists");
+		}
+
+		Optional<Friend> existFriend = friendRepository.findByUserIdAndFriendId(user.getId(), friendRequest.getFriendRequestId());
+		if (existFriend.isPresent()) {
+			throw new FriendException("ERROR: You are already friends");
+		}
+
 		friendRequest.setUserId(user.getId());
 		friendRequestRepository.save(friendRequest);
 	}
