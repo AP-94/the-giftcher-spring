@@ -259,7 +259,7 @@ public class UserServiceImpl implements IUserService {
 	}
 	
 	@Override
-	public void updateUserPassword(Password password, long id) throws Exception {
+	public User updateUserPassword(Password password, long id) throws Exception {
 		String newPassword = password.getNewPassword();
 		String oldPassword = password.getOldPassword();
 		
@@ -278,6 +278,13 @@ public class UserServiceImpl implements IUserService {
 		String encodedPassword = new BCryptPasswordEncoder().encode(newPassword);
 		userToUpdate.setPassword(encodedPassword);
 		userRepository.save(userToUpdate);
+		
+		UserDetails userDetails = jwtUserDetailsServiceImpl.loadUserByUsername(userToUpdate.getUsername());
+		final String token = jwtTokenUtil.generateToken(userDetails);
+				
+		userToUpdate.setToken(token);
+		
+		return userToUpdate;
 	}
 
 	@Override
@@ -373,8 +380,14 @@ public class UserServiceImpl implements IUserService {
         String imageLink = "https://storage.googleapis.com/thegiftcher/" + imageName;
         user.setImagePath(imageLink);
         user.setImageName(imageName);
+        userRepository.save(user);
         
-        return userRepository.save(user);
+        UserDetails userDetails = jwtUserDetailsServiceImpl.loadUserByUsername(user.getUsername());
+		final String token = jwtTokenUtil.generateToken(userDetails);
+				
+		user.setToken(token);
+        
+        return user;
     }
 	
 	private Bucket getBucket(String bucketName) throws IOException {

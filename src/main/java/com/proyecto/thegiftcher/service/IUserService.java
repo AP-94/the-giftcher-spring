@@ -21,6 +21,7 @@ public interface IUserService {
 	User getUserLogged(HttpServletRequest request);
 	User updateUser(User user, long id) throws Exception;
 	User profileImageGoogleCloud(MultipartFile file, long id) throws Exception;
+	User updateUserPassword(Password password, long id) throws Exception;
 	List<User> getAll();
 	Resource loadProfileImageAsResource(long id);
 	void post(User user);
@@ -28,7 +29,6 @@ public interface IUserService {
 	void updateUser(User user) throws Exception;
 	void resetPassword(String userMail) throws Exception;
 	void delete(long id) throws Exception;
-	void updateUserPassword(Password password, long id) throws Exception;
 	void profileImage(MultipartFile file, long id) throws Exception;
 	void registerUser(User user) throws NoSuchAlgorithmException;
 

@@ -59,13 +59,13 @@ public class UserController {
 	}
 
 	@PutMapping(path = "/update_password")
-	public Map<String, String> updateUserPassword(@RequestBody Password password, HttpServletRequest request)
+	public User updateUserPassword(@RequestBody Password password, HttpServletRequest request)
 			throws Exception {
 		User user = userService.getUserLogged(request);
 		Long id = user.getId();
-		userService.updateUserPassword(password, id);
 
-		return Collections.singletonMap("message", "User password updated");
+
+		return userService.updateUserPassword(password, id);
 
 	}
 
