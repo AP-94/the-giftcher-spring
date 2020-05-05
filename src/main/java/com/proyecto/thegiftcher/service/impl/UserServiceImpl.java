@@ -45,9 +45,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.proyecto.thegiftcher.domain.Friend;
 import com.proyecto.thegiftcher.domain.Password;
 import com.proyecto.thegiftcher.domain.User;
 import com.proyecto.thegiftcher.domain.Wish;
+import com.proyecto.thegiftcher.repository.FriendRepository;
 import com.proyecto.thegiftcher.repository.UserRepository;
 import com.proyecto.thegiftcher.repository.WishRepository;
 
@@ -60,6 +62,7 @@ public class UserServiceImpl implements IUserService {
 
 	private final UserRepository userRepository;
 	private final WishRepository wishRepository;
+	private final FriendRepository friendRepository;
 	private final JwtTokenUtil jwtTokenUtil;
 	private final IEmailService emailService;
 	public static String profileImagesDirectory = "/home/ec2-user/profileImages";
@@ -71,11 +74,12 @@ public class UserServiceImpl implements IUserService {
 	@Autowired
 	private JwtUserDetailsServiceImpl jwtUserDetailsServiceImpl;
 	
-	public UserServiceImpl(UserRepository userRepository, JwtTokenUtil jwtTokenUtil, IEmailService emailService, WishRepository wishRepository) throws IOException {
+	public UserServiceImpl(UserRepository userRepository, JwtTokenUtil jwtTokenUtil, IEmailService emailService, WishRepository wishRepository, FriendRepository friendRepository) throws IOException {
 		this.userRepository = userRepository;
 		this.jwtTokenUtil = jwtTokenUtil;
 		this.emailService = emailService;
 		this.wishRepository = wishRepository;
+		this.friendRepository = friendRepository;
 	}
 
 	@Override
@@ -300,11 +304,22 @@ public class UserServiceImpl implements IUserService {
 		} 
 		
 		List<Wish> wishesOfUser = (List<Wish>) wishRepository.findAllWishesByUserId(id);
+		List<Friend> userFriends = (List<Friend>) friendRepository.findAllFriendsByUserId(id);
 		
 		if (!wishesOfUser.isEmpty()) {
 			for (Wish wish: wishesOfUser) {
 				wishRepository.deleteById(wish.getId());
 			}
+		}
+		
+		if (!userFriends.isEmpty()) {
+			for (Friend friend: userFriends) {
+			Optional<Friend> userIdAndFriendId = friendRepository.findByUserIdAndFriendId(friend.getUserId(), friend.getFriendId());
+			userIdAndFriendId.ifPresent(value -> friendRepository.deleteById(value.getId()));
+
+			userIdAndFriendId = friendRepository.findByUserIdAndFriendId(friend.getFriendId(), friend.getUserId());
+			userIdAndFriendId.ifPresent(value -> friendRepository.deleteById(value.getId()));
+				}
 		}
 		
 		User userToDelete = currentUser.get();
