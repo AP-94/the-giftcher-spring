@@ -21,6 +21,5 @@ public interface IWishService {
 	Wish modify(Wish wish, long id, HttpServletRequest request) throws Exception;
 	void delete(long id, HttpServletRequest request);
 	void addImages(long id, MultipartFile file, HttpServletRequest request) throws Exception;
-
-
+	Wish getById(long id);
 }

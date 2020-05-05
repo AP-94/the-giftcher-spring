@@ -81,8 +81,8 @@ public class WishServiceImpl implements IWishService {
 	public Wish create(Wish wish, HttpServletRequest request) {
 		User user = userService.getUserLogged(request);
 		wish.setUserId(user.getId());
-		wishRepository.save(wish);
-		return wish;
+		Wish save = wishRepository.save(wish);
+		return save;
 	}
 
 
@@ -192,7 +192,12 @@ public class WishServiceImpl implements IWishService {
 		wishToUpdate.setImagePath(imagePath);
 		wishRepository.save(wishToUpdate);
 	}
-	
+
+	@Override
+	public Wish getById(long id) {
+		return wishRepository.getOne(id);
+	}
+
 	@Override
 	public Wish wishImageGoogleCloud(MultipartFile file, long id, HttpServletRequest request) throws Exception {
         checkFileExtension(file.getName());
