@@ -47,7 +47,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.proyecto.thegiftcher.domain.Password;
 import com.proyecto.thegiftcher.domain.User;
+import com.proyecto.thegiftcher.domain.Wish;
 import com.proyecto.thegiftcher.repository.UserRepository;
+import com.proyecto.thegiftcher.repository.WishRepository;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -57,6 +59,7 @@ import javax.validation.ValidationException;
 public class UserServiceImpl implements IUserService {
 
 	private final UserRepository userRepository;
+	private final WishRepository wishRepository;
 	private final JwtTokenUtil jwtTokenUtil;
 	private final IEmailService emailService;
 	public static String profileImagesDirectory = "/home/ec2-user/profileImages";
@@ -68,10 +71,11 @@ public class UserServiceImpl implements IUserService {
 	@Autowired
 	private JwtUserDetailsServiceImpl jwtUserDetailsServiceImpl;
 	
-	public UserServiceImpl(UserRepository userRepository, JwtTokenUtil jwtTokenUtil, IEmailService emailService) throws IOException {
+	public UserServiceImpl(UserRepository userRepository, JwtTokenUtil jwtTokenUtil, IEmailService emailService, WishRepository wishRepository) throws IOException {
 		this.userRepository = userRepository;
 		this.jwtTokenUtil = jwtTokenUtil;
 		this.emailService = emailService;
+		this.wishRepository = wishRepository;
 	}
 
 	@Override
@@ -294,6 +298,14 @@ public class UserServiceImpl implements IUserService {
 		if (!currentUser.isPresent()) {
 			throw new Exception("User not found");
 		} 
+		
+		List<Wish> wishesOfUser = (List<Wish>) wishRepository.findAllWishesByUserId(id);
+		
+		if (!wishesOfUser.isEmpty()) {
+			for (Wish wish: wishesOfUser) {
+				wishRepository.deleteById(wish.getId());
+			}
+		}
 		
 		User userToDelete = currentUser.get();
 		userRepository.deleteById(userToDelete.getId());
