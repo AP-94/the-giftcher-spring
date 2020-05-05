@@ -29,6 +29,7 @@ import com.proyecto.thegiftcher.service.IEmailService;
 
 import com.proyecto.thegiftcher.service.IUserService;
 import com.proyecto.thegiftcher.web.error.CustomError;
+import com.proyecto.thegiftcher.web.error.CustomErrorEmail;
 import com.proyecto.thegiftcher.web.error.StorageFileNotFoundException;
 import com.proyecto.thegiftcher.web.error.UnauthorizedError;
 
@@ -344,7 +345,7 @@ public class UserServiceImpl implements IUserService {
 	public void resetPassword(String userMail) throws Exception {
 		
 		if (userRepository.findByMail(userMail) == null) {
-			throw new Exception("No user found with that Email");
+			throw new CustomErrorEmail("No user found with that Email");
 		}
 		
 		User user = userRepository.findByMail(userMail);
