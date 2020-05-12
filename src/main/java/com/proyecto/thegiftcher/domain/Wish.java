@@ -22,7 +22,7 @@ public class Wish implements Serializable {
     @NotNull
     private Long userId;
     
-    @Size(min = 3, max = 100)
+    //@Size(min = 3, max = 100)
     @NotEmpty
     private String name;
 
@@ -44,7 +44,7 @@ public class Wish implements Serializable {
 
     private Boolean reserved;
 
-    @Size(min = 4, max = 50)
+    //@Size(min = 4, max = 50)
     private String location;
 
     @CreationTimestamp
